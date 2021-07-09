@@ -5,7 +5,7 @@ import Resource from './Resource'
 
 type Empire = {
   [key in EmpireSide]: {
-    victoryPoints?: { [key in DevelopmentType | Character]?: number }
+    victoryPoints?: { quantity: number, per: DevelopmentType | Character }
     production: { [key in Resource]?: number }
     krystallium?: number
   }

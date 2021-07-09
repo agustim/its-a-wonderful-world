@@ -9,7 +9,7 @@ import Phase from '@gamepark/its-a-wonderful-world/Phase'
 import Player from '@gamepark/its-a-wonderful-world/Player'
 import PlayerView from '@gamepark/its-a-wonderful-world/PlayerView'
 import {isPlayer} from '@gamepark/its-a-wonderful-world/typeguards'
-import {usePlayerId, usePlayers} from '@gamepark/react-client'
+import {usePlayers} from '@gamepark/react-client'
 import {useTranslation} from 'react-i18next'
 import CharacterTokenPile from '../material/characters/CharacterTokenPile'
 import EmpireCard from '../material/empires/EmpireCard'
@@ -30,9 +30,6 @@ type Props = {
 
 export default function DisplayedEmpire({game, player}: Props) {
   const {t} = useTranslation()
-  const playerId = usePlayerId<EmpireName>()
-  const playerIndex = playerId !== undefined ? game.players.findIndex(player => player.empire === playerId) : 0
-  const panelIndex = (game.players.findIndex(p => p.empire === player.empire) + playerIndex) % game.players.length
   const players = usePlayers<EmpireName>()
   const getName = (empire: EmpireName) => players.find(p => p.id === empire)?.name || getPlayerName(empire, t)
   const gameOver = isOver(game)
@@ -57,10 +54,7 @@ export default function DisplayedEmpire({game, player}: Props) {
                             t('{player} has {quantity, plural, one{# General token} other{# General tokens}}',
                               {player: getName(player.empire), quantity: player.characters[Character.General]})}
                           css={generalsPilePosition} draggable={isPlayer(player)}/>
-      {isPlayer(player) ?
-        <PlayerHand player={player} players={game.players.length} round={game.round}/> :
-        <OtherPlayerHand player={player} players={game.players.length} round={game.round} panelIndex={panelIndex}/>
-      }
+      {isPlayer(player) ? <PlayerHand player={player} game={game}/> : <OtherPlayerHand player={player} game={game}/>}
     </>
   )
 }

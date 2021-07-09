@@ -7,7 +7,7 @@ import EmpireSide from './material/EmpireSide'
 export type ItsAWonderfulWorldOptions = {
   players: { id: EmpireName }[],
   empiresSide: EmpireSide,
-  //corruptionAndAscension: boolean
+  corruptionAndAscension: boolean
 }
 
 export function isGameOptions(arg: GameState | ItsAWonderfulWorldOptions): arg is ItsAWonderfulWorldOptions {
@@ -31,10 +31,12 @@ export const ItsAWonderfulWorldOptionsSpec: OptionsSpec<ItsAWonderfulWorldOption
       warn: t => side === EmpireSide.A ? t('Side A is advised for beginners') : '',
       subscriberRequired: side !== EmpireSide.A && side !== EmpireSide.B
     })
+  },
+  corruptionAndAscension: {
+    label: t => t('Corruption & Ascension'),
+    help: t => t('c&a.help'),
+    subscriberRequired: true
   }
-  /*corruptionAndAscension: {
-    label: (t: TFunction) => t('Corruption & Ascension')
-  }*/
 }
 
 export function getPlayerName(empire: EmpireName, t: TFunction): string {

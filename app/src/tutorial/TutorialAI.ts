@@ -1,8 +1,12 @@
 import GameState from '@gamepark/its-a-wonderful-world/GameState'
+import ItsAWonderfulWorld, {
+  canBuild, constructionsThatMayReceiveCubes, getMovesToBuild, getNextProductionStep, getProduction, getRemainingCost, getScore, numberOfRounds,
+  placeAvailableCubesMoves
+} from '@gamepark/its-a-wonderful-world/ItsAWonderfulWorld'
 import Character, {ChooseCharacter, isCharacter} from '@gamepark/its-a-wonderful-world/material/Character'
 import Construction from '@gamepark/its-a-wonderful-world/material/Construction'
-import Development from '@gamepark/its-a-wonderful-world/material/Development'
-import {developmentCards} from '@gamepark/its-a-wonderful-world/material/Developments'
+import DevelopmentDetails from '@gamepark/its-a-wonderful-world/material/DevelopmentDetails'
+import {getCardDetails} from '@gamepark/its-a-wonderful-world/material/Developments'
 import DevelopmentType, {isDevelopmentType} from '@gamepark/its-a-wonderful-world/material/DevelopmentType'
 import EmpireName from '@gamepark/its-a-wonderful-world/material/EmpireName'
 import Resource, {isResource, resources} from '@gamepark/its-a-wonderful-world/material/Resource'
@@ -19,10 +23,6 @@ import {tellYouAreReadyMove} from '@gamepark/its-a-wonderful-world/moves/TellYou
 import Phase from '@gamepark/its-a-wonderful-world/Phase'
 import Player from '@gamepark/its-a-wonderful-world/Player'
 import PlayerView from '@gamepark/its-a-wonderful-world/PlayerView'
-import ItsAWonderfulWorld, {
-  canBuild, constructionsThatMayReceiveCubes, getMovesToBuild, getNextProductionStep, getProduction, getRemainingCost, getScore, numberOfRounds,
-  placeAvailableCubesMoves
-} from '@gamepark/its-a-wonderful-world/ItsAWonderfulWorld'
 import produce from 'immer'
 
 type AIOptions = {
@@ -62,7 +62,7 @@ export default class TutorialAI {
 
   private draft(game: GameState, player: Player): Move[] {
     const cardRates = player.hand.reduce<Map<number, number>>((map, card) => {
-      const rate = this.rateDevelopment(developmentCards[card], player, game)
+      const rate = this.rateDevelopment(getCardDetails(card), player, game)
       map.set(card, rate)
       return map
     }, new Map<number, number>())
@@ -80,15 +80,15 @@ export default class TutorialAI {
     }))).moves
   }
 
-  private rateDevelopment(development: Development, player: Player, game: GameState) {
+  private rateDevelopment(development: DevelopmentDetails, player: Player, game: GameState) {
     return this.buildRate(development, player, game.round) + this.recycleRate(development, player, game.round) + this.counterRate(development, player, game)
   }
 
-  private buildRate(development: Development, player: Player | PlayerView, round: number) {
+  private buildRate(development: DevelopmentDetails, player: Player | PlayerView, round: number) {
     return this.expectedProductionRate(development, player, round) + this.expectedScore(development, player)
   }
 
-  private expectedProductionRate(development: Development, player: Player | PlayerView, round: number) {
+  private expectedProductionRate(development: DevelopmentDetails, player: Player | PlayerView, round: number) {
     if (!development.production) {
       return 0
     } else if (isResource(development.production)) {
@@ -99,7 +99,7 @@ export default class TutorialAI {
         const productionMultiplier = TutorialAI.getProductionMultiplier(development.constructionCost, player, round, resource)
         const production = development.production![resource] as number | DevelopmentType | undefined
         if (isDevelopmentType(production)) {
-          sum += (player.constructedDevelopments.filter(card => developmentCards[card].type === production).length + productionMultiplier) * productionMultiplier
+          sum += (player.constructedDevelopments.filter(card => getCardDetails(card).type === production).length + productionMultiplier) * productionMultiplier
         } else if (production) {
           sum += empiresProductionRate[player.empire][resource] * production * productionMultiplier
         }
@@ -125,7 +125,7 @@ export default class TutorialAI {
     return roundsLeft * (roundsLeft + 1) / 2
   }
 
-  private expectedScore(development: Development, player: Player | PlayerView) {
+  private expectedScore(development: DevelopmentDetails, player: Player | PlayerView) {
     const expectedScores = empiresExpectedScore[player.empire]
     let expectedScore = expectedScores[development.type]
     if (isCharacter(development.constructionBonus)) {
@@ -149,21 +149,21 @@ export default class TutorialAI {
     return Math.max(0, expectedScore - (development.constructionCost.Financier || 0) * expectedScores.Financier - (development.constructionCost.General || 0) * expectedScores.General)
   }
 
-  private recycleRate(development: Development, player: Player | PlayerView, round: number) {
+  private recycleRate(development: DevelopmentDetails, player: Player | PlayerView, round: number) {
     const resource = development.recyclingBonus
     const need = player.constructionArea.reduce((sum, construction) => {
       sum += getRemainingCost(construction).filter(cost => cost.item === resource).length
       return sum
     }, 0)
     const mightNeed = player.draftArea.reduce((sum, card) => {
-      sum += developmentCards[card].constructionCost[resource] || 0
+      sum += getCardDetails(card).constructionCost[resource] || 0
       return sum
     }, 0)
     const produce = getProduction(player, resource)
     return 0.2 + Math.max(0, need + mightNeed / 2 - produce * (numberOfRounds + 1 - round))
   }
 
-  private counterRate(development: Development, player: Player, game: GameState) {
+  private counterRate(development: DevelopmentDetails, player: Player, game: GameState) {
     return game.players.filter(otherPlayer => otherPlayer.empire !== player.empire).reduce((sum, player) => {
       sum += this.buildRate(development, player, game.round)
       return sum
@@ -210,8 +210,9 @@ export default class TutorialAI {
       const buildOption = {moves: [slateForConstructionMove(this.playerId, card)], next: (game: GameState) => this.planScore(game), rate: 0}
       const recycle: Recycle = recycleMove(this.playerId, card)
       const recycleOption = {moves: [recycle], next: (game: GameState) => this.planScore(game), rate: 0}
-      const buildRate = this.buildRate(developmentCards[card], player, game.round)
-      const recycleRate = this.recycleRate(developmentCards[card], player, game.round)
+      const development = getCardDetails(card)
+      const buildRate = this.buildRate(development, player, game.round)
+      const recycleRate = this.recycleRate(development, player, game.round)
       if (buildRate === 0) {
         highestConfidenceOptions = [recycleOption, buildOption]
         break
@@ -306,7 +307,7 @@ export default class TutorialAI {
 
   private potentialScore(player: Player, round: number) {
     const constructionAreaPotential = player.constructionArea.reduce((sum, construction) => {
-      const rate = this.buildRate(developmentCards[construction.card], player, round + 1)
+      const rate = this.buildRate(getCardDetails(construction.card), player, round + 1)
       const totalCost = construction.costSpaces.length
       const costPaid = construction.costSpaces.filter(costSpace => !!costSpace).length
       return sum + rate * (totalCost + costPaid) / (totalCost * 2)

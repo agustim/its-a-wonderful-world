@@ -1,7 +1,7 @@
 import GameState from '../GameState'
 import GameView from '../GameView'
-import {isConstructionBonus} from '../material/Development'
-import {developmentCards} from '../material/Developments'
+import {isConstructionBonus} from '../material/DevelopmentDetails'
+import {getCardDetails} from '../material/Developments'
 import EmpireName from '../material/EmpireName'
 import Move from './Move'
 import MoveType from './MoveType'
@@ -22,7 +22,7 @@ export function completeConstruction(state: GameState | GameView, move: Complete
   if (!player) return console.error('Cannot apply', move, 'on', state, ': could not find player')
   player.constructionArea = player.constructionArea.filter(construction => construction.card !== move.card)
   player.constructedDevelopments.push(move.card)
-  const bonus = developmentCards[move.card].constructionBonus
+  const bonus = getCardDetails(move.card).constructionBonus
   if (bonus) {
     if (isConstructionBonus(bonus)) {
       player.bonuses.push(bonus)

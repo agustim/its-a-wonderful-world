@@ -4,7 +4,7 @@ import GameView from '@gamepark/its-a-wonderful-world/GameView'
 import {canBuild, getMovesToBuild, getRemainingCost, placeAvailableCubesMoves} from '@gamepark/its-a-wonderful-world/ItsAWonderfulWorld'
 import Character from '@gamepark/its-a-wonderful-world/material/Character'
 import Construction from '@gamepark/its-a-wonderful-world/material/Construction'
-import {developmentCards} from '@gamepark/its-a-wonderful-world/material/Developments'
+import {getCardDetails} from '@gamepark/its-a-wonderful-world/material/Developments'
 import EmpireName from '@gamepark/its-a-wonderful-world/material/EmpireName'
 import Resource, {isResource} from '@gamepark/its-a-wonderful-world/material/Resource'
 import CompleteConstruction, {isCompleteConstruction} from '@gamepark/its-a-wonderful-world/moves/CompleteConstruction'
@@ -138,12 +138,12 @@ export default function ConstructionArea({game, gameOver, player}: Props) {
           css={[textButton, textButtonLeft, getPlaceConstructionButton(getTotalConstructionCost(construction.card) + (maxSpendableResources.length > 1 ? 2 : 1))]}
           onClick={() => build(construction)}>{t('Build')}</button>
         }
-        <button css={[textButton, textButtonRight, recyclingButton(developmentCards[construction.card].recyclingBonus)]}
+        <button css={[textButton, textButtonRight, recyclingButton(getCardDetails(construction.card).recyclingBonus)]}
                 onClick={() => play(recycleMove(player.empire, construction.card))}>
           {t('Recycle')}
         </button>
       </>}
-      <FocusedDevelopmentOptions development={developmentCards[construction.card]} onClose={() => setFocusedCard(undefined)}/>
+      <FocusedDevelopmentOptions development={getCardDetails(construction.card)} onClose={() => setFocusedCard(undefined)}/>
     </>}
     <div ref={ref} css={getConstructionAreaStyle(row, fullWidth, isValidTarget, isOver)}>
       {!player.constructionArea.length && <span css={constructionAreaText}>{t('Construction area')}</span>}
@@ -198,7 +198,7 @@ function getSmartPlaceItemMoves(player: Player, construction: Construction): (Pl
   return moves
 }
 
-const getTotalConstructionCost = (card: number) => Object.values(constructionCost(developmentCards[card].constructionCost)).reduce((value, sum) => sum + value)
+const getTotalConstructionCost = (card: number) => Object.values(constructionCost(getCardDetails(card).constructionCost)).reduce((value, sum) => sum + value)
 
 export const maxResourcesToPlace = (player: Player, construction: Construction) => {
   const resources: Resource[] = []

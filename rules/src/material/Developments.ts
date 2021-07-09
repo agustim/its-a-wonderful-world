@@ -1,5 +1,7 @@
 import Character from './Character'
-import Development from './Development'
+import DeckType from './DeckType'
+import Development, {developments, getDevelopmentDetails} from './Development'
+import DevelopmentDetails from './DevelopmentDetails'
 import DevelopmentType from './DevelopmentType'
 import Resource from './Resource'
 
@@ -7,7 +9,8 @@ const {Energy, Materials, Science, Gold, Exploration, Krystallium} = Resource
 const {Structure, Vehicle, Research, Project, Discovery} = DevelopmentType
 const {Financier, General} = Character
 
-export const FinancialCenter: Development = {
+export const FinancialCenter: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Structure,
   constructionCost: {[Materials]: 4, [Energy]: 1},
   constructionBonus: Financier,
@@ -16,7 +19,8 @@ export const FinancialCenter: Development = {
   numberOfCopies: 5
 }
 
-export const IndustrialComplex: Development = {
+export const IndustrialComplex: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Structure,
   constructionCost: {[Materials]: 3, [Energy]: 1},
   constructionBonus: Financier,
@@ -25,7 +29,8 @@ export const IndustrialComplex: Development = {
   numberOfCopies: 6
 }
 
-export const MilitaryBase: Development = {
+export const MilitaryBase: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Structure,
   constructionCost: {[Materials]: 3, [Energy]: 1},
   constructionBonus: General,
@@ -34,7 +39,8 @@ export const MilitaryBase: Development = {
   numberOfCopies: 6
 }
 
-export const NuclearPlant: Development = {
+export const NuclearPlant: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Structure,
   constructionCost: {[Materials]: 4, [Science]: 1},
   production: {[Energy]: 3},
@@ -42,7 +48,8 @@ export const NuclearPlant: Development = {
   numberOfCopies: 5
 }
 
-export const OffshoreOilRig: Development = {
+export const OffshoreOilRig: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Structure,
   constructionCost: {[Materials]: 3, [Exploration]: 1},
   constructionBonus: Financier,
@@ -51,7 +58,8 @@ export const OffshoreOilRig: Development = {
   numberOfCopies: 5
 }
 
-export const RecyclingPlant: Development = {
+export const RecyclingPlant: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Structure,
   constructionCost: {[Materials]: 2},
   production: {[Materials]: 2},
@@ -59,7 +67,8 @@ export const RecyclingPlant: Development = {
   numberOfCopies: 7
 }
 
-export const ResearchCenter: Development = {
+export const ResearchCenter: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Structure,
   constructionCost: {[Materials]: 3, [Energy]: 1},
   production: {[Science]: 2},
@@ -67,15 +76,17 @@ export const ResearchCenter: Development = {
   numberOfCopies: 7
 }
 
-export const TransportationNetwork: Development = {
+export const TransportationNetwork: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Structure,
   constructionCost: {[Materials]: 3},
-  victoryPoints: {[Vehicle]: 1},
+  victoryPoints: {quantity: 1, per: Vehicle},
   recyclingBonus: Materials,
   numberOfCopies: 2
 }
 
-export const WindTurbines: Development = {
+export const WindTurbines: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Structure,
   constructionCost: {[Materials]: 2},
   production: Energy,
@@ -83,7 +94,8 @@ export const WindTurbines: Development = {
   numberOfCopies: 7
 }
 
-export const AirborneLaboratory: Development = {
+export const AirborneLaboratory: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Vehicle,
   constructionCost: {[Energy]: 3},
   production: {[Science]: 1, [Exploration]: 1},
@@ -91,7 +103,8 @@ export const AirborneLaboratory: Development = {
   numberOfCopies: 3
 }
 
-export const AircraftCarrier: Development = {
+export const AircraftCarrier: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Vehicle,
   constructionCost: {[Materials]: 3, [Energy]: 4},
   constructionBonus: {[General]: 2},
@@ -99,7 +112,8 @@ export const AircraftCarrier: Development = {
   recyclingBonus: Materials
 }
 
-export const Icebreaker: Development = {
+export const Icebreaker: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Vehicle,
   constructionCost: {[Energy]: 3, [Science]: 1},
   production: {[Exploration]: 2},
@@ -107,16 +121,18 @@ export const Icebreaker: Development = {
   numberOfCopies: 4
 }
 
-export const Juggernaut: Development = {
+export const Juggernaut: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Vehicle,
   constructionCost: {[Materials]: 3, [Energy]: 3, [Krystallium]: 1},
   constructionBonus: {[General]: 2},
   production: {[Exploration]: 2},
-  victoryPoints: {[Vehicle]: 1},
+  victoryPoints: {quantity: 1, per: Vehicle},
   recyclingBonus: Materials
 }
 
-export const MegaDrill: Development = {
+export const MegaDrill: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Vehicle,
   constructionCost: {[Materials]: 1, [Energy]: 2},
   production: {[Materials]: 1, [Exploration]: 1},
@@ -124,7 +140,8 @@ export const MegaDrill: Development = {
   numberOfCopies: 4
 }
 
-export const SaucerSquadron: Development = {
+export const SaucerSquadron: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Vehicle,
   constructionCost: {[Energy]: 3, [Science]: 2},
   production: {[Exploration]: 3},
@@ -132,7 +149,8 @@ export const SaucerSquadron: Development = {
   numberOfCopies: 2
 }
 
-export const Submarine: Development = {
+export const Submarine: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Vehicle,
   constructionCost: {[Materials]: 2, [Energy]: 3},
   constructionBonus: General,
@@ -141,7 +159,8 @@ export const Submarine: Development = {
   numberOfCopies: 3
 }
 
-export const TankDivision: Development = {
+export const TankDivision: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Vehicle,
   constructionCost: {[Materials]: 1, [Energy]: 2},
   constructionBonus: General,
@@ -150,7 +169,8 @@ export const TankDivision: Development = {
   numberOfCopies: 7
 }
 
-export const Zeppelin: Development = {
+export const Zeppelin: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Vehicle,
   constructionCost: {[Energy]: 2},
   production: Exploration,
@@ -158,15 +178,17 @@ export const Zeppelin: Development = {
   numberOfCopies: 6
 }
 
-export const Aquaculture: Development = {
+export const Aquaculture: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 4, [Gold]: 2},
   constructionBonus: Financier,
-  victoryPoints: {[Financier]: 1},
+  victoryPoints: {quantity: 1, per: Financier},
   recyclingBonus: Science
 }
 
-export const BionicCrafts: Development = {
+export const BionicGrafts: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 5},
   constructionBonus: General,
@@ -175,7 +197,8 @@ export const BionicCrafts: Development = {
   recyclingBonus: Materials
 }
 
-export const ClimateControl: Development = {
+export const ClimateControl: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 5},
   production: {[Energy]: 2, [Gold]: 1},
@@ -183,15 +206,17 @@ export const ClimateControl: Development = {
   recyclingBonus: Energy
 }
 
-export const Cryopreservation: Development = {
+export const Cryopreservation: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 7},
   constructionBonus: Financier,
-  victoryPoints: {[Financier]: 1},
+  victoryPoints: {quantity: 1, per: Financier},
   recyclingBonus: Gold
 }
 
-export const GeneticUpgrades: Development = {
+export const GeneticUpgrades: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 4},
   constructionBonus: {[Financier]: 2},
@@ -199,15 +224,17 @@ export const GeneticUpgrades: Development = {
   recyclingBonus: Science
 }
 
-export const GravityInverter: Development = {
+export const GravityInverter: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Energy]: 1, [Science]: 4, [Krystallium]: 1},
   constructionBonus: Financier,
-  victoryPoints: {[Project]: 2},
+  victoryPoints: {quantity: 2, per: Project},
   recyclingBonus: Science
 }
 
-export const HumanCloning: Development = {
+export const HumanCloning: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 2, [Gold]: 1},
   constructionBonus: Financier,
@@ -216,7 +243,8 @@ export const HumanCloning: Development = {
   recyclingBonus: Gold
 }
 
-export const MegaBomb: Development = {
+export const MegaBomb: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Energy]: 2, [Science]: 2},
   constructionBonus: {[General]: 2},
@@ -224,7 +252,8 @@ export const MegaBomb: Development = {
   recyclingBonus: Energy
 }
 
-export const Neuroscience: Development = {
+export const Neuroscience: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 3},
   production: {[Science]: Research},
@@ -232,15 +261,17 @@ export const Neuroscience: Development = {
   recyclingBonus: Science
 }
 
-export const QuantumGenerator: Development = {
+export const QuantumGenerator: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 5},
   production: {[Energy]: 3},
-  victoryPoints: {[Vehicle]: 1},
+  victoryPoints: {quantity: 1, per: Vehicle},
   recyclingBonus: Energy
 }
 
-export const RobotAssistants: Development = {
+export const RobotAssistants: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 3},
   production: {[Materials]: Structure},
@@ -248,7 +279,8 @@ export const RobotAssistants: Development = {
   recyclingBonus: Materials
 }
 
-export const RoboticAnimals: Development = {
+export const RoboticAnimals: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Energy]: 1, [Science]: 2},
   constructionBonus: General,
@@ -257,7 +289,8 @@ export const RoboticAnimals: Development = {
   recyclingBonus: Energy
 }
 
-export const Satellites: Development = {
+export const Satellites: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Energy]: 2, [Science]: 4},
   constructionBonus: General,
@@ -266,22 +299,25 @@ export const Satellites: Development = {
   recyclingBonus: Exploration
 }
 
-export const SecurityAutomatons: Development = {
+export const SecurityAutomatons: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 4, [Gold]: 1},
-  victoryPoints: {[General]: 1},
+  victoryPoints: {quantity: 1, per: General},
   recyclingBonus: Gold
 }
 
-export const SuperSoldiers: Development = {
+export const SuperSoldiers: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 7},
   constructionBonus: General,
-  victoryPoints: {[General]: 1},
+  victoryPoints: {quantity: 1, per: General},
   recyclingBonus: Exploration
 }
 
-export const SuperSonar: Development = {
+export const SuperSonar: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 4},
   production: {[Exploration]: Vehicle},
@@ -289,15 +325,17 @@ export const SuperSonar: Development = {
   recyclingBonus: Exploration
 }
 
-export const Supercomputer: Development = {
+export const Supercomputer: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 4},
   production: Science,
-  victoryPoints: {[Vehicle]: 1},
+  victoryPoints: {quantity: 1, per: Vehicle},
   recyclingBonus: Science
 }
 
-export const Teleportation: Development = {
+export const Teleportation: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 8},
   constructionBonus: {[Krystallium]: 2},
@@ -305,14 +343,16 @@ export const Teleportation: Development = {
   recyclingBonus: Exploration
 }
 
-export const TimeTravel: Development = {
+export const TimeTravel: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 5, [Krystallium]: 3},
   victoryPoints: 15,
   recyclingBonus: Exploration
 }
 
-export const Transmutation: Development = {
+export const Transmutation: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 3, [Gold]: 2},
   constructionBonus: Krystallium,
@@ -321,21 +361,24 @@ export const Transmutation: Development = {
   recyclingBonus: Gold
 }
 
-export const UniversalVaccine: Development = {
+export const UniversalVaccine: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 3},
-  victoryPoints: {[Project]: 1},
+  victoryPoints: {quantity: 1, per: Project},
   recyclingBonus: Gold
 }
 
-export const UnknownTechnology: Development = {
+export const UnknownTechnology: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 7, [Krystallium]: 1},
-  victoryPoints: {[Research]: 3},
+  victoryPoints: {quantity: 3, per: Research},
   recyclingBonus: Science
 }
 
-export const VirtualReality: Development = {
+export const VirtualReality: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 5},
   production: {[Gold]: Research},
@@ -343,17 +386,19 @@ export const VirtualReality: Development = {
   recyclingBonus: Gold
 }
 
-export const CasinoCity: Development = {
+export const CasinoCity: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Energy]: 3, [Gold]: 4},
   constructionBonus: Financier,
   production: {[Gold]: 2},
-  victoryPoints: {[Financier]: 1},
+  victoryPoints: {quantity: 1, per: Financier},
   recyclingBonus: Gold,
   numberOfCopies: 2
 }
 
-export const EspionageAgency: Development = {
+export const EspionageAgency: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Energy]: 2, [Gold]: 2},
   production: {[Exploration]: 2},
@@ -362,7 +407,8 @@ export const EspionageAgency: Development = {
   numberOfCopies: 2
 }
 
-export const GiantDam: Development = {
+export const GiantDam: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Materials]: 3, [Gold]: 2},
   production: {[Energy]: 4},
@@ -370,14 +416,16 @@ export const GiantDam: Development = {
   recyclingBonus: Energy
 }
 
-export const GiantTower: Development = {
+export const GiantTower: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Materials]: 2, [Gold]: 3, [Financier]: 1},
   victoryPoints: 10,
   recyclingBonus: Gold
 }
 
-export const HarborZone: Development = {
+export const HarborZone: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Gold]: 5},
   constructionBonus: {[Financier]: 2},
@@ -387,7 +435,8 @@ export const HarborZone: Development = {
   numberOfCopies: 2
 }
 
-export const LunarBase: Development = {
+export const LunarBase: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Energy]: 2, [Science]: 2, [Gold]: 2, [Krystallium]: 1},
   constructionBonus: {[General]: 2},
@@ -395,7 +444,8 @@ export const LunarBase: Development = {
   recyclingBonus: Exploration
 }
 
-export const MagneticTrain: Development = {
+export const MagneticTrain: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Energy]: 1, [Science]: 1, [Gold]: 3},
   constructionBonus: {[Financier]: 2},
@@ -404,31 +454,35 @@ export const MagneticTrain: Development = {
   recyclingBonus: Gold
 }
 
-export const Museum: Development = {
+export const Museum: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Gold]: 3},
-  victoryPoints: {[Discovery]: 2},
+  victoryPoints: {quantity: 2, per: Discovery},
   recyclingBonus: Exploration,
   numberOfCopies: 2
 }
 
-export const NationalMonument: Development = {
+export const NationalMonument: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Materials]: 5, [Gold]: 3},
-  victoryPoints: {[Project]: 2},
+  victoryPoints: {quantity: 2, per: Project},
   recyclingBonus: Gold
 }
 
-export const PolarBase: Development = {
+export const PolarBase: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Energy]: 3, [Gold]: 4},
   constructionBonus: General,
   production: {[Exploration]: 3},
-  victoryPoints: {[Discovery]: 2},
+  victoryPoints: {quantity: 2, per: Discovery},
   recyclingBonus: Exploration
 }
 
-export const PropagandaCenter: Development = {
+export const PropagandaCenter: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Gold]: 3},
   constructionBonus: General,
@@ -438,41 +492,46 @@ export const PropagandaCenter: Development = {
   numberOfCopies: 2
 }
 
-export const SecretLaboratory: Development = {
+export const SecretLaboratory: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Materials]: 2, [Gold]: 3},
   constructionBonus: Krystallium,
   production: {[Science]: 2},
-  victoryPoints: {[Research]: 1},
+  victoryPoints: {quantity: 1, per: Research},
   recyclingBonus: Science,
   numberOfCopies: 2
 }
 
-export const SecretSociety: Development = {
+export const SecretSociety: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Gold]: 3, [Krystallium]: 1},
-  victoryPoints: {[Financier]: 1},
+  victoryPoints: {quantity: 1, per: Financier},
   recyclingBonus: Gold,
   numberOfCopies: 2
 }
 
-export const SolarCannon: Development = {
+export const SolarCannon: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Energy]: 2, [Science]: 1, [Gold]: 3},
   constructionBonus: General,
-  victoryPoints: {[General]: 1},
+  victoryPoints: {quantity: 1, per: General},
   recyclingBonus: Energy
 }
 
-export const SpaceElevator: Development = {
+export const SpaceElevator: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Energy]: 3, [Science]: 1, [Gold]: 2},
   constructionBonus: Financier,
-  victoryPoints: {[Financier]: 1},
+  victoryPoints: {quantity: 1, per: Financier},
   recyclingBonus: Energy
 }
 
-export const UndergroundCity: Development = {
+export const UndergroundCity: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Materials]: 3, [Gold]: 3},
   constructionBonus: Krystallium,
@@ -482,7 +541,8 @@ export const UndergroundCity: Development = {
   numberOfCopies: 2
 }
 
-export const UnderwaterCity: Development = {
+export const UnderwaterCity: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Energy]: 2, [Science]: 1, [Gold]: 2},
   production: {[Science]: 1, [Exploration]: 2},
@@ -491,14 +551,16 @@ export const UnderwaterCity: Development = {
   numberOfCopies: 2
 }
 
-export const UniversalExposition: Development = {
+export const UniversalExposition: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Gold]: 3, [Financier]: 2},
-  victoryPoints: {[Research]: 3},
+  victoryPoints: {quantity: 3, per: Research},
   recyclingBonus: Gold
 }
 
-export const University: Development = {
+export const University: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Science]: 1, [Gold]: 2},
   production: {[Science]: Project},
@@ -506,14 +568,16 @@ export const University: Development = {
   recyclingBonus: Science
 }
 
-export const WorldCongress: Development = {
+export const WorldCongress: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Project,
   constructionCost: {[Gold]: 6, [Financier]: 2},
-  victoryPoints: {[Project]: 3},
+  victoryPoints: {quantity: 3, per: Project},
   recyclingBonus: Gold
 }
 
-export const AlexandersTomb: Development = {
+export const AlexandersTomb: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 7},
   constructionBonus: {[General]: 2},
@@ -521,7 +585,8 @@ export const AlexandersTomb: Development = {
   recyclingBonus: Gold
 }
 
-export const AncientAstronauts: Development = {
+export const AncientAstronauts: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 6, [General]: 1},
   constructionBonus: {[Krystallium]: 2},
@@ -530,7 +595,8 @@ export const AncientAstronauts: Development = {
   recyclingBonus: Science
 }
 
-export const ArkOfTheCovenant: Development = {
+export const ArkOfTheCovenant: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 4},
   constructionBonus: Krystallium,
@@ -538,14 +604,16 @@ export const ArkOfTheCovenant: Development = {
   recyclingBonus: Exploration
 }
 
-export const Atlantis: Development = {
+export const Atlantis: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 7, [Krystallium]: 1},
-  victoryPoints: {[General]: 2},
+  victoryPoints: {quantity: 2, per: General},
   recyclingBonus: Gold
 }
 
-export const BermudaTriangle: Development = {
+export const BermudaTriangle: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 4},
   constructionBonus: Krystallium,
@@ -554,7 +622,8 @@ export const BermudaTriangle: Development = {
   recyclingBonus: Science
 }
 
-export const BlackBeardsTreasure: Development = {
+export const BlackBeardsTreasure: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 3},
   production: {[Gold]: 1, [Exploration]: 1},
@@ -562,14 +631,16 @@ export const BlackBeardsTreasure: Development = {
   recyclingBonus: Gold
 }
 
-export const CenterOfTheEarth: Development = {
+export const CenterOfTheEarth: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 5, [General]: 2},
   victoryPoints: 15,
   recyclingBonus: Exploration
 }
 
-export const CitiesOfGold: Development = {
+export const CitiesOfGold: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 4},
   production: {[Gold]: 3},
@@ -577,30 +648,34 @@ export const CitiesOfGold: Development = {
   recyclingBonus: Gold
 }
 
-export const CityOfAgartha: Development = {
+export const CityOfAgartha: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 4, [Krystallium]: 1},
   production: {[Exploration]: 2},
-  victoryPoints: {[General]: 1},
+  victoryPoints: {quantity: 1, per: General},
   recyclingBonus: Exploration
 }
 
-export const FountainOfYouth: Development = {
+export const FountainOfYouth: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 7},
   constructionBonus: {[Krystallium]: 3},
-  victoryPoints: {[General]: 1},
+  victoryPoints: {quantity: 1, per: General},
   recyclingBonus: Energy
 }
 
-export const GardensOfTheHesperides: Development = {
+export const GardensOfTheHesperides: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 5},
-  victoryPoints: {[Project]: 2},
+  victoryPoints: {quantity: 2, per: Project},
   recyclingBonus: Exploration
 }
 
-export const IslandOfAvalon: Development = {
+export const IslandOfAvalon: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 5},
   production: Science,
@@ -608,7 +683,8 @@ export const IslandOfAvalon: Development = {
   recyclingBonus: Science
 }
 
-export const KingSolomonsMines: Development = {
+export const KingSolomonsMines: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 4},
   production: {[Gold]: Structure},
@@ -616,33 +692,37 @@ export const KingSolomonsMines: Development = {
   recyclingBonus: Gold
 }
 
-export const LostContinentOfMu: Development = {
+export const LostContinentOfMu: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 6},
   constructionBonus: {[Krystallium]: 2},
   production: Gold,
-  victoryPoints: {[Discovery]: 2},
+  victoryPoints: {quantity: 2, per: Discovery},
   recyclingBonus: Gold
 }
 
-export const ParallelDimension: Development = {
+export const ParallelDimension: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Science]: 3, [Exploration]: 4, [General]: 1},
   constructionBonus: {[Krystallium]: 3},
-  victoryPoints: {[Research]: 3},
+  victoryPoints: {quantity: 3, per: Research},
   recyclingBonus: Exploration
 }
 
-export const Roswell: Development = {
+export const Roswell: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 6},
   constructionBonus: General,
   production: Science,
-  victoryPoints: {[General]: 1},
+  victoryPoints: {quantity: 1, per: General},
   recyclingBonus: Science
 }
 
-export const TreasureOfTheTemplars: Development = {
+export const TreasureOfTheTemplars: DevelopmentDetails = {
+  deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 5},
   constructionBonus: {[Krystallium]: 2},
@@ -651,11 +731,19 @@ export const TreasureOfTheTemplars: Development = {
   recyclingBonus: Gold
 }
 
-export const developments: Development[] = [
-  FinancialCenter, IndustrialComplex, MilitaryBase, NuclearPlant, OffshoreOilRig, RecyclingPlant, ResearchCenter, TransportationNetwork, WindTurbines,
-  AirborneLaboratory, AircraftCarrier, Icebreaker, Juggernaut, MegaDrill, SaucerSquadron, Submarine, TankDivision, Zeppelin,
-  Aquaculture, BionicCrafts, ClimateControl, Cryopreservation, GeneticUpgrades, GravityInverter, HumanCloning, MegaBomb, Neuroscience, QuantumGenerator, RobotAssistants, RoboticAnimals, Satellites, SecurityAutomatons, SuperSoldiers, SuperSonar, Supercomputer, Teleportation, TimeTravel, Transmutation, UniversalVaccine, UnknownTechnology, VirtualReality,
-  CasinoCity, EspionageAgency, GiantDam, GiantTower, HarborZone, LunarBase, MagneticTrain, Museum, NationalMonument, PolarBase, PropagandaCenter, SecretLaboratory, SecretSociety, SolarCannon, SpaceElevator, UndergroundCity, UnderwaterCity, UniversalExposition, University, WorldCongress,
-  AlexandersTomb, AncientAstronauts, ArkOfTheCovenant, Atlantis, BermudaTriangle, BlackBeardsTreasure, CenterOfTheEarth, CitiesOfGold, CityOfAgartha, FountainOfYouth, GardensOfTheHesperides, IslandOfAvalon, KingSolomonsMines, LostContinentOfMu, ParallelDimension, Roswell, TreasureOfTheTemplars]
+function createCopies(development: Development): Development[] {
+  return Array(getDevelopmentDetails(development).numberOfCopies || 1).fill(development)
+}
 
-export const developmentCards: Development[] = developments.flatMap(development => Array(development.numberOfCopies || 1).fill(development))
+export const developmentCards: Development[] = developments.flatMap(createCopies)
+
+export const baseDevelopmentCardIds = Array.from(developmentCards.map(getDevelopmentDetails).filter(development => development.deck === DeckType.Default).keys())
+export const ascensionDevelopmentCardIds = Array.from(developmentCards.keys()).slice(baseDevelopmentCardIds.length)
+
+export function getCardType(card: number): DeckType {
+  return getDevelopmentDetails(developmentCards[card]).deck
+}
+
+export function getCardDetails(card: number): DevelopmentDetails {
+  return getDevelopmentDetails(developmentCards[card])
+}

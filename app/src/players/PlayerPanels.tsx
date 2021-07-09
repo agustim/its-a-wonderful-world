@@ -9,7 +9,7 @@ import ReceiveCharacter, {isReceiveCharacter} from '@gamepark/its-a-wonderful-wo
 import {isRevealChosenCards, RevealChosenCardsView} from '@gamepark/its-a-wonderful-world/moves/RevealChosenCards'
 import Phase from '@gamepark/its-a-wonderful-world/Phase'
 import {useActions, useAnimation, usePlay, usePlayerId, useTutorial} from '@gamepark/react-client'
-import {useCallback, useMemo, useRef} from 'react'
+import {useCallback, useRef} from 'react'
 import DraftDirectionIndicator from '../material/board/DraftDirectionIndicator'
 import {circleCharacterTopPosition, getCircleCharacterLeftPosition} from '../material/board/ResourceArea'
 import CharacterToken from '../material/characters/CharacterToken'
@@ -22,6 +22,7 @@ import {
 import useKeyDown from '../util/useKeyDown'
 import PlayerPanel from './PlayerPanel'
 import ScorePanel from './score/ScorePanel'
+import usePlayersStartingWithMe from './usePlayersStartingWithMe'
 
 type Props = {
   game: GameView
@@ -32,7 +33,7 @@ export default function PlayerPanels({game}: Props) {
   const canDisplayOtherPlayers = !tutorial || game.round > 1
   const play = usePlay()
   const playerId = usePlayerId<EmpireName>()
-  const players = useMemo(() => getPlayersStartingWith(game, playerId), [game, playerId])
+  const players = usePlayersStartingWithMe(game)
   const displayedPlayerId = game.displayedPlayer ?? playerId ?? game.players[0].empire
 
   const displayPlayer = useCallback((player: EmpireName) => {
@@ -57,15 +58,15 @@ export default function PlayerPanels({game}: Props) {
     || (isReceiveCharacter(animation.move) && animation.move.playerId !== displayedPlayerId))
   const revealingCards = animation && isRevealChosenCards(animation.move) ? animation.move : undefined
   const supremacyBonus = animation && isReceiveCharacter(animation.move) ? animation.move : undefined
-  const sortByPanel = (entries: [EmpireName, number][]) => {
+  const sortByPanel = (entries: [EmpireName, {card: number, index: number}][]) => {
     entries.sort((a, b) => players.findIndex(p => p.empire === a[0]) - players.findIndex(p => p.empire === b[0]))
     return entries
   }
   const actions = useActions()
   const gameOver = isOver(game) && !!actions && actions.every(action => !action.pending)
   const gameWasLive = useRef(!gameOver)
-  const revealedCards = revealingCards && sortByPanel(Object.entries(revealingCards.revealedCards) as [EmpireName, number][])
-    .filter((_, index) => !playerId || index !== 0).map<number>(entry => entry[1])
+  const revealedCards = revealingCards && sortByPanel(Object.entries(revealingCards.revealedCards) as [EmpireName, {card: number, index: number}][])
+    .filter((_, index) => !playerId || index !== 0).map(([empireName, revealedCard]) => ({...revealedCard, empireName}))
   return (
     <>
       {game.players.length > 2 && game.phase === Phase.Draft && <DraftDirectionIndicator clockwise={game.round % 2 === 1} players={players.length}/>}
@@ -74,23 +75,16 @@ export default function PlayerPanels({game}: Props) {
                      css={[player.empire === displayedPlayerId ? activePanel : (canDisplayOtherPlayers && clickablePanel)]}/>
       )}
       {gameOver && <ScorePanel game={game} animation={gameWasLive.current}/>}
-      {revealedCards && revealedCards.map((card, index) =>
-        <DevelopmentCard key={card} development={developmentCards[card]}
-                         css={[cardStyle, revealedCardStyle, revealedCardPosition(playerId ? index + 1 : index),
-                           revealedCardAnimation(index, animation!.duration / (playerId ? game.players.length - 1 : game.players.length))]}/>)}
+      {revealedCards && revealedCards.map((revealedCard, index) => {
+        if (revealedCard.empireName === displayedPlayerId) return null
+        return <DevelopmentCard key={revealedCard.card} development={developmentCards[revealedCard.card]}
+                                css={[cardStyle, revealedCardStyle, revealedCardPosition(playerId ? index + 1 : index),
+                                  revealedCardAnimation(index, animation!.duration / (playerId ? game.players.length - 1 : game.players.length))]}/>
+      })}
       {supremacyBonus && <CharacterToken character={supremacyBonus.character}
                                          css={supremacyBonusAnimation(game.productionStep!, players.findIndex(player => player.empire === supremacyBonus.playerId), animation!.duration)}/>}
     </>
   )
-}
-
-export const getPlayersStartingWith = (game: GameView, playerId?: EmpireName) => {
-  if (playerId) {
-    const playerIndex = game.players.findIndex(player => player.empire === playerId)
-    return [...game.players.slice(playerIndex, game.players.length), ...game.players.slice(0, playerIndex)]
-  } else {
-    return game.players
-  }
 }
 
 const activePanel = css`

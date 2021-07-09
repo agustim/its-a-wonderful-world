@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import GameView from '@gamepark/its-a-wonderful-world/GameView'
+import DeckType from '@gamepark/its-a-wonderful-world/material/DeckType'
 import {developmentCards} from '@gamepark/its-a-wonderful-world/material/Developments'
 import {useTranslation} from 'react-i18next'
 import ReactTooltip from 'react-tooltip'
@@ -14,11 +15,11 @@ export default function DrawPile({game}: Props) {
   const nbDeck = game.deck
   const nbCards = developmentCards.length
   return <>
-    {[...Array(Math.min(game.deck, drawPileMaxSize))].map((_, index) => <DevelopmentCard key={index} css={[cardStyle, css`
+    {[...Array(Math.min(game.deck, drawPileMaxSize))].map((_, index) => <DevelopmentCard key={index} deckType={DeckType.Default} css={[cardStyle, css`
       position: absolute;
       top: ${drawPileCardY(index)}%;
       left: ${drawPileCardX(index)}%;
-      transform: scale(${drawPileScale});
+      transform: rotateY(180deg) scale(${drawPileScale});
 
       & > img {
         box-shadow: 0 0 3px black;

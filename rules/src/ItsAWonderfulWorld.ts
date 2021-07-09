@@ -5,8 +5,8 @@ import GameState from './GameState'
 import GameView from './GameView'
 import Character, {characters, ChooseCharacter, isCharacter} from './material/Character'
 import Construction from './material/Construction'
-import Development, {totalCost} from './material/Development'
-import {developmentCards} from './material/Developments'
+import DevelopmentDetails, {totalCost} from './material/DevelopmentDetails'
+import {ascensionDevelopmentCardIds, baseDevelopmentCardIds, getCardDetails, getCardType} from './material/Developments'
 import DevelopmentType, {developmentTypes, isDevelopmentType} from './material/DevelopmentType'
 import EmpireName from './material/EmpireName'
 import Empires from './material/Empires'
@@ -37,9 +37,9 @@ import {isGameOptions, ItsAWonderfulWorldOptions} from './Options'
 import Phase from './Phase'
 import Player from './Player'
 import PlayerView from './PlayerView'
+import {isPlayerView} from './typeguards'
 
 export const numberOfCardsToDraft = 7
-const numberOfCardsDeal2Players = 10
 export const numberOfRounds = 4
 
 const defaultEmpireCardsSide = EmpireSide.A
@@ -56,13 +56,17 @@ export default class ItsAWonderfulWorld extends SimultaneousGame<GameState, Move
   constructor(options: ItsAWonderfulWorldOptions)
   constructor(arg: ItsAWonderfulWorldOptions | GameState) {
     if (isGameOptions(arg)) {
-      super({
+      const setup: GameState = {
         players: setupPlayers(arg),
-        deck: shuffle(Array.from(developmentCards.keys())),
+        deck: shuffle(baseDevelopmentCardIds),
         discard: [],
         round: 1,
         phase: Phase.Draft
-      })
+      }
+      if (arg.corruptionAndAscension) {
+        setup.ascensionDeck = shuffle(ascensionDevelopmentCardIds)
+      }
+      super(setup)
     } else {
       super(arg)
     }
@@ -206,14 +210,15 @@ export default class ItsAWonderfulWorld extends SimultaneousGame<GameState, Move
 
   getView(playerId?: EmpireName | undefined): GameView {
     return {
-      ...this.state, deck: this.state.deck.length,
+      ...this.state, deck: this.state.deck.length, ascensionDeck: this.state.ascensionDeck?.length,
       players: this.state.players.map(player => {
         if (player.empire === playerId) {
           return player
         } else {
-          const playerView = {...player, hand: player.hand.length} as PlayerView
-          if (player.chosenCard !== undefined) {
-            playerView.chosenCard = true
+          const {hand, chosenCard, ...visible} = player
+          const playerView: PlayerView = {...visible, hiddenHand: hand.map(getCardType)}
+          if (chosenCard !== undefined) {
+            playerView.ready = true
           }
           return playerView
         }
@@ -227,25 +232,31 @@ export default class ItsAWonderfulWorld extends SimultaneousGame<GameState, Move
 
   getMoveView(move: Move, playerId?: EmpireName): MoveView {
     switch (move.type) {
-      case MoveType.DealDevelopmentCards:
-        return playerId ? {...move, playerCards: this.state.players.find(player => player.empire === playerId)!.hand} : move
+      case MoveType.DealDevelopmentCards: {
+        const stateAfter = JSON.parse(JSON.stringify(this.state)) as GameState
+        dealDevelopmentCards(stateAfter)
+        return playerId ? {...move, playerCards: stateAfter.players.find(player => player.empire === playerId)!.hand} : move
+      }
       case MoveType.ChooseDevelopmentCard:
         if (playerId !== move.playerId) {
           const {card, ...moveView} = move
-          return moveView
+          return {...moveView, cardType: getCardType(card)}
         }
         break
       case MoveType.RevealChosenCards:
         return {
-          ...move, revealedCards: this.state.players.reduce<{ [key in EmpireName]?: number }>((revealedCards, player) => {
-            revealedCards[player.empire] = player.draftArea[player.draftArea.length - 1]
+          ...move, revealedCards: this.state.players.reduce<{ [key in EmpireName]?: {card: number, index: number} }>((revealedCards, player) => {
+            revealedCards[player.empire] = {card: player.chosenCard!, index: player.hand.indexOf(player.chosenCard!)}
             return revealedCards
           }, {})
         }
-      case MoveType.PassCards:
-        return {...move, receivedCards: playerId ? this.state.players.find(player => player.empire === playerId)!.hand : undefined}
+      case MoveType.PassCards: {
+        const stateAfter = JSON.parse(JSON.stringify(this.state)) as GameState
+        passCards(stateAfter)
+        return {...move, receivedCards: playerId ? stateAfter.players.find(player => player.empire === playerId)!.hand : undefined}
+      }
       case MoveType.DiscardLeftoverCards:
-        return {...move, discardedCards: this.state.discard.slice((numberOfCardsToDraft - numberOfCardsDeal2Players) * this.state.players.length)}
+        return {...move, discardedCards: this.state.players.flatMap(player => player.hand)}
     }
     return move
   }
@@ -306,7 +317,7 @@ export function getPredictableAutomaticMoves(state: GameState | GameView): Move 
       return receiveCharacterMove(player.empire, bonus)
     }
     for (const resource of [...new Set(player.availableResources)]) {
-      if (!player.draftArea.some(card => developmentCards[card].constructionCost[resource])
+      if (!player.draftArea.some(card => getCardDetails(card).constructionCost[resource])
         && !player.constructionArea.some(construction => getSpacesMissingItem(construction, item => item === resource).length > 0)) {
         // Automatically place resources on the Empire card if there is 0 chance to place it on a development
         return placeResourceOnEmpireMove(player.empire, resource)
@@ -366,13 +377,13 @@ export function getLegalMoves(player: Player, phase: Phase) {
 }
 
 export function getCost(card: number): (Resource | Character)[] {
-  const development = developmentCards[card]
+  const development = getCardDetails(card)
   return Array.of<Resource | Character>(...resources, ...characters)
     .flatMap(item => Array(development.constructionCost[item] || 0).fill(item))
 }
 
 export function getRemainingCost(construction: Construction): { item: Resource | Character, space: number }[] {
-  const development = developmentCards[construction.card]
+  const development = getCardDetails(construction.card)
   return Array.of<Resource | Character>(...resources, ...characters)
     .flatMap(item => Array(development.constructionCost[item] || 0).fill(item))
     .map((item, index) => ({item, space: index}))
@@ -399,14 +410,15 @@ export function getNextProductionStep(game: GameState | GameView) {
 }
 
 export function getProduction(player: Player | PlayerView, resource: Resource): number {
-  return getBaseProduction(player, resource) + player.constructedDevelopments.reduce((sum, card) => sum + getDevelopmentProduction(player, developmentCards[card], resource), 0)
+  const developmentsProduction = player.constructedDevelopments.reduce((sum, card) => sum + getDevelopmentProduction(player, getCardDetails(card), resource), 0)
+  return Math.max(0, getEmpireProduction(player, resource) + developmentsProduction)
 }
 
-function getBaseProduction(player: Player | PlayerView, resource: Resource): number {
+function getEmpireProduction(player: Player | PlayerView, resource: Resource): number {
   return Empires[player.empire][player.empireSide].production[resource] || 0
 }
 
-function getDevelopmentProduction(player: Player | PlayerView, development: Development, resource: Resource): number {
+function getDevelopmentProduction(player: Player | PlayerView, development: DevelopmentDetails, resource: Resource): number {
   if (!development.production) {
     return 0
   } else if (isResource(development.production)) {
@@ -414,20 +426,20 @@ function getDevelopmentProduction(player: Player | PlayerView, development: Deve
   } else {
     const production = development.production[resource]
     if (isDevelopmentType(production)) {
-      return player.constructedDevelopments.filter(card => developmentCards[card].type === production).length
+      return player.constructedDevelopments.filter(card => getCardDetails(card).type === production).length
     } else {
       return production || 0
     }
   }
 }
 
-function getCardVictoryPointsMultiplier(item: DevelopmentType | Character, victoryPoints?: number | { [key in DevelopmentType | Character]?: number }): number {
+function getCardVictoryPointsMultiplier(item: DevelopmentType | Character, victoryPoints?: number | { quantity: number, per: DevelopmentType | Character | (DevelopmentType | Character)[] }): number {
   return victoryPoints && typeof victoryPoints !== 'number' && victoryPoints[item] ? victoryPoints[item]! : 0
 }
 
 export function getVictoryPointsBonusMultiplier(player: Player | PlayerView, item: DevelopmentType | Character): number {
   return getCardVictoryPointsMultiplier(item, Empires[player.empire][player.empireSide].victoryPoints) +
-    player.constructedDevelopments.map(card => developmentCards[card].victoryPoints)
+    player.constructedDevelopments.map(card => getCardDetails(card).victoryPoints)
       .reduce<number>((sum, victoryPoints) => sum + getCardVictoryPointsMultiplier(item, victoryPoints), 0)
 }
 
@@ -443,7 +455,7 @@ export function getScore(player: Player | PlayerView): number {
 }
 
 export function getFlatVictoryPoints(player: Player | PlayerView): number {
-  return player.constructedDevelopments.map(card => developmentCards[card].victoryPoints)
+  return player.constructedDevelopments.map(card => getCardDetails(card).victoryPoints)
     .reduce<number>((sum, victoryPoints) => sum + (typeof victoryPoints == 'number' ? victoryPoints : 0), 0)
 }
 
@@ -452,7 +464,7 @@ export function getComboVictoryPoints(player: Player | PlayerView, item: Develop
 }
 
 export function getItemQuantity(player: Player | PlayerView, item: DevelopmentType | Character): number {
-  return isDevelopmentType(item) ? player.constructedDevelopments.filter(card => developmentCards[card].type === item).length : player.characters[item]
+  return isDevelopmentType(item) ? player.constructedDevelopments.filter(card => getCardDetails(card).type === item).length : player.characters[item]
 }
 
 export function canBuild(player: Player, card: number): boolean {
@@ -487,7 +499,7 @@ export function canPay(player: Player, cost: (Resource | Character)[]) {
 export function getMovesToBuild(player: Player, card: number): (PlaceResourceOnConstruction | PlaceCharacter)[] {
   const moves: (PlaceResourceOnConstruction | PlaceCharacter)[] = []
   const construction = player.constructionArea.find(construction => construction.card === card)
-    || {card, costSpaces: Array(totalCost(developmentCards[card])).fill(null)}
+    || {card, costSpaces: Array(totalCost(getCardDetails(card))).fill(null)}
   const remainingCost = getRemainingCost(construction)
   for (const resource of resources) {
     const resourceCosts = remainingCost.filter(cost => cost.item === resource)
@@ -521,7 +533,7 @@ export function isActive(game: GameView, playerId: EmpireName) {
   const player = game.players.find(player => player.empire === playerId)!
   switch (game.phase) {
     case Phase.Draft:
-      return player.chosenCard === undefined
+      return isPlayerView(player) ? !player.ready : player.chosenCard === undefined
     case Phase.Planning:
     case Phase.Production:
       return !player.ready

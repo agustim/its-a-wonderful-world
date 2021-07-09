@@ -1,5 +1,6 @@
 import GameState from '../GameState'
 import GameView from '../GameView'
+import DeckType from '../material/DeckType'
 import EmpireName from '../material/EmpireName'
 import {isPlayerView} from '../typeguards'
 import Move from './Move'
@@ -12,7 +13,9 @@ export default interface ChooseDevelopmentCard {
   card: number
 }
 
-export type ChooseDevelopmentCardView = Omit<ChooseDevelopmentCard, 'card'>
+export type ChooseDevelopmentCardView = Omit<ChooseDevelopmentCard, 'card'> & {
+  cardType: DeckType
+}
 
 export const chooseDevelopmentCardMove = (playerId: EmpireName, card: number): ChooseDevelopmentCard => ({
   type: MoveType.ChooseDevelopmentCard, playerId, card
@@ -22,7 +25,6 @@ export function chooseDevelopmentCard(state: GameState | GameView, move: ChooseD
   const player = state.players.find(player => player.empire === move.playerId)
   if (!player) return console.error('Cannot apply', move, 'on', state, ': player id is missing')
   if (isPlayerView(player)) return console.error('Cannot apply', move, 'on', state, ': chosen card should be hidden to the other players')
-  player.hand = player.hand.filter(card => card !== move.card)
   player.chosenCard = move.card
 }
 
@@ -38,8 +40,7 @@ export function chooseSecretDevelopmentCard(state: GameView, move: ChooseDevelop
   const player = state.players.find(player => player.empire === move.playerId)
   if (!player) return console.error('Cannot apply', move, 'on', state, ': player id is missing')
   if (!isPlayerView(player)) return console.error('Cannot apply', move, 'on', state, ': chosen card should not be hidden to the player choosing it')
-  player.hand--
-  player.chosenCard = true
+  player.ready = true
 }
 
 export function isChooseDevelopmentCard(move: Move | MoveView): move is (ChooseDevelopmentCard | ChooseDevelopmentCardView) {

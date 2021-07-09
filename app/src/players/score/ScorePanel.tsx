@@ -1,17 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import GameView from '@gamepark/its-a-wonderful-world/GameView'
-import EmpireName from '@gamepark/its-a-wonderful-world/material/EmpireName'
-import {usePlayerId} from '@gamepark/react-client'
-import {HTMLAttributes, useMemo, useState} from 'react'
-import {getPlayersStartingWith} from '../PlayerPanels'
+import {HTMLAttributes, useState} from 'react'
+import usePlayersStartingWithMe from '../usePlayersStartingWithMe'
 import PlayerScore from './PlayerScore'
 
 type Props = { game: GameView, animation: boolean } & HTMLAttributes<HTMLDivElement>
 
 export default function ScorePanel({game, animation}: Props) {
-  const playerId = usePlayerId<EmpireName>()
-  const players = useMemo(() => getPlayersStartingWith(game, playerId), [game, playerId])
+  const players = usePlayersStartingWithMe(game)
   const [displayScore, setDisplayScore] = useState(true)
   return (
     <div css={scorePanelStyle}>

@@ -3,9 +3,7 @@ import {css} from '@emotion/react'
 import GameView from '@gamepark/its-a-wonderful-world/GameView'
 import {countCharacters, getNextProductionStep, getScore, isOver, numberOfRounds} from '@gamepark/its-a-wonderful-world/ItsAWonderfulWorld'
 import Character from '@gamepark/its-a-wonderful-world/material/Character'
-import {
-  HarborZone, IndustrialComplex, PropagandaCenter, SecretSociety, UniversalExposition, WindTurbines, Zeppelin
-} from '@gamepark/its-a-wonderful-world/material/Developments'
+import Development from '@gamepark/its-a-wonderful-world/material/Development'
 import EmpireName from '@gamepark/its-a-wonderful-world/material/EmpireName'
 import Resource from '@gamepark/its-a-wonderful-world/material/Resource'
 import {isCompleteConstruction} from '@gamepark/its-a-wonderful-world/moves/CompleteConstruction'
@@ -21,7 +19,7 @@ import {TFunction} from 'i18next'
 import {useEffect, useState} from 'react'
 import {Trans, useTranslation} from 'react-i18next'
 import CharacterToken from './material/characters/CharacterToken'
-import DevelopmentCardsTitles from './material/developments/DevelopmentCardsTitles'
+import {getDevelopmentDisplay} from './material/developments/DevelopmentDisplay'
 import Button from './util/Button'
 import {gameOverDelay} from './util/Styles'
 
@@ -77,10 +75,10 @@ function getText(t: TFunction, validate: () => void, play: (move: Move) => void,
         } else {
           return t('The players pass the rest of the cards to the right')
         }
-      } else if (player && player.chosenCard === undefined) {
+      } else if (player && isPlayer(player) && player.chosenCard === undefined) {
         return t('Choose a card and place it in your draft area')
       } else {
-        const players = game.players.filter(player => player.chosenCard === undefined)
+        const players = game.players.filter(player => !player.ready)
         if (players.length === 0) {
           return t('Sending move to the Supreme Leader…')
         } else if (players.length === 1) {
@@ -163,50 +161,52 @@ function getText(t: TFunction, validate: () => void, play: (move: Move) => void,
 function getTutorialText(t: TFunction, game: GameView, player: Player): string | undefined {
   switch (game.phase) {
     case Phase.Draft:
+      const getChooseText = (development: Development) => t('Tutorial: choose the card {card} and place it to your draft area', {card: getDevelopmentDisplay(development).title(t)})
       switch (player.hand.length) {
         case 7 :
-          return t('Tutorial: choose the card {card} and place it to your draft area', {card: DevelopmentCardsTitles.get(SecretSociety)!(t)})
+          return getChooseText(Development.SecretSociety)
         case 6 :
-          return t('Tutorial: choose the card {card} and place it to your draft area', {card: DevelopmentCardsTitles.get(IndustrialComplex)!(t)})
+          return getChooseText(Development.IndustrialComplex)
         case 5 :
-          return t('Tutorial: choose the card {card} and place it to your draft area', {card: DevelopmentCardsTitles.get(PropagandaCenter)!(t)})
+          return getChooseText(Development.PropagandaCenter)
         case 4 :
-          return t('Tutorial: choose the card {card} and place it to your draft area', {card: DevelopmentCardsTitles.get(HarborZone)!(t)})
+          return getChooseText(Development.HarborZone)
         case 3 :
-          return t('Tutorial: choose the card {card} and place it to your draft area', {card: DevelopmentCardsTitles.get(WindTurbines)!(t)})
+          return getChooseText(Development.WindTurbines)
         case 2 :
-          return t('Tutorial: choose the card {card} and place it to your draft area', {card: DevelopmentCardsTitles.get(UniversalExposition)!(t)})
+          return getChooseText(Development.UniversalExposition)
       }
       break
     case Phase.Planning:
+      const getSelectText = (development: Development) => t('Tutorial: select the card {card} and place it to your construction area', {card: getDevelopmentDisplay(development).title(t)})
       switch (player.draftArea.length) {
         case 7 :
-          return t('Tutorial: select the card {card} and place it to your construction area', {card: DevelopmentCardsTitles.get(IndustrialComplex)!(t)})
+          return getSelectText(Development.IndustrialComplex)
         case 6 :
-          return t('Tutorial: select the card {card} and place it to your construction area', {card: DevelopmentCardsTitles.get(PropagandaCenter)!(t)})
+          return getSelectText(Development.PropagandaCenter)
         case 5 :
-          return t('Tutorial: select the card {card} and place it to your construction area', {card: DevelopmentCardsTitles.get(HarborZone)!(t)})
+          return getSelectText(Development.HarborZone)
         case 4 :
-          return t('Tutorial: select the card {card} and place it to your construction area', {card: DevelopmentCardsTitles.get(SecretSociety)!(t)})
+          return getSelectText(Development.SecretSociety)
         case 3 :
-          return t('Tutorial: select the card {card} and recycle it', {card: DevelopmentCardsTitles.get(UniversalExposition)!(t)})
+          return t('Tutorial: select the card {card} and recycle it', {card: getDevelopmentDisplay(Development.UniversalExposition).title(t)})
         case 2 :
           if (player.availableResources.length > 0)
-            return t('Tutorial: place your resources on the {card} card', {card: DevelopmentCardsTitles.get(PropagandaCenter)!(t)})
+            return t('Tutorial: place your resources on the {card} card', {card: getDevelopmentDisplay(Development.PropagandaCenter).title(t)})
           else
-            return t('Tutorial: select the card {card} and recycle it', {card: DevelopmentCardsTitles.get(WindTurbines)!(t)})
+            return t('Tutorial: select the card {card} and recycle it', {card:  getDevelopmentDisplay(Development.WindTurbines).title(t)})
         case 1 :
           if (player.availableResources.length > 0)
-            return t('Tutorial: place your resources on the {card} card', {card: DevelopmentCardsTitles.get(IndustrialComplex)!(t)})
+            return t('Tutorial: place your resources on the {card} card', {card:  getDevelopmentDisplay(Development.IndustrialComplex).title(t)})
           else
-            return t('Tutorial: select the card {card} and recycle it', {card: DevelopmentCardsTitles.get(Zeppelin)!(t)})
+            return t('Tutorial: select the card {card} and recycle it', {card:  getDevelopmentDisplay(Development.Zeppelin).title(t)})
       }
       break
     case Phase.Production:
       if (player.availableResources.filter(r => r === Resource.Materials).length > 0)
-        return t('Tutorial: place your resources on the {card} card', {card: DevelopmentCardsTitles.get(IndustrialComplex)!(t)})
+        return t('Tutorial: place your resources on the {card} card', {card:  getDevelopmentDisplay(Development.IndustrialComplex).title(t)})
       else if (player.availableResources.filter(r => r === Resource.Gold).length > 0)
-        return t('Tutorial: place your resources on the {card} card', {card: DevelopmentCardsTitles.get(PropagandaCenter)!(t)})
+        return t('Tutorial: place your resources on the {card} card', {card:  getDevelopmentDisplay(Development.PropagandaCenter).title(t)})
       break
   }
   return
