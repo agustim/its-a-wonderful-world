@@ -145,30 +145,56 @@ import aztecEmpireAvatar from './empires/aztec-empire-avatar.png'
 import aztecEmpireB from './empires/aztec-empire-B.jpg'
 import aztecEmpireC from './empires/aztec-empire-C.jpg'
 import aztecEmpireD from './empires/aztec-empire-D.jpg'
+import aztecEmpireE from './empires/aztec-empire-E.jpg'
+import aztecEmpireF from './empires/aztec-empire-F.jpg'
 import federationOfAsiaA from './empires/federation-of-asia-A.jpg'
 import federationOfAsiaArtwork from './empires/federation-of-asia-artwork.jpg'
 import federationOfAsiaAvatar from './empires/federation-of-asia-avatar.png'
 import federationOfAsiaB from './empires/federation-of-asia-B.jpg'
 import federationOfAsiaC from './empires/federation-of-asia-C.jpg'
 import federationOfAsiaD from './empires/federation-of-asia-D.jpg'
+import federationOfAsiaE from './empires/federation-of-asia-E.jpg'
+import federationOfAsiaF from './empires/federation-of-asia-F.jpg'
+import nationsOfOceaniaA from './empires/nations-of-oceania-A.jpg'
+import nationsOfOceaniaArtwork from './empires/nations-of-oceania-artwork.jpg'
+import nationsOfOceaniaAvatar from './empires/nations-of-oceania-avatar.png'
+import nationsOfOceaniaB from './empires/nations-of-oceania-B.jpg'
+import nationsOfOceaniaC from './empires/nations-of-oceania-C.jpg'
+import nationsOfOceaniaD from './empires/nations-of-oceania-D.jpg'
+import nationsOfOceaniaE from './empires/nations-of-oceania-E.jpg'
+import nationsOfOceaniaF from './empires/nations-of-oceania-F.jpg'
 import noramStatesA from './empires/noram-states-A.jpg'
 import noramStatesArtwork from './empires/noram-states-artwork.jpg'
 import noramStatesAvatar from './empires/noram-states-avatar.png'
 import noramStatesB from './empires/noram-states-B.jpg'
 import noramStatesC from './empires/noram-states-C.jpg'
 import noramStatesD from './empires/noram-states-D.jpg'
+import noramStatesE from './empires/noram-states-E.jpg'
+import noramStatesF from './empires/noram-states-F.jpg'
+import northHegemonyA from './empires/north-hegemony-A.jpg'
+import northHegemonyArtwork from './empires/north-hegemony-artwork.jpg'
+import northHegemonyAvatar from './empires/north-hegemony-avatar.png'
+import northHegemonyB from './empires/north-hegemony-B.jpg'
+import northHegemonyC from './empires/north-hegemony-C.jpg'
+import northHegemonyD from './empires/north-hegemony-D.jpg'
+import northHegemonyE from './empires/north-hegemony-E.jpg'
+import northHegemonyF from './empires/north-hegemony-F.jpg'
 import panafricanUnionA from './empires/panafrican-union-A.jpg'
 import panafricanUnionArtwork from './empires/panafrican-union-artwork.jpg'
 import panafricanUnionAvatar from './empires/panafrican-union-avatar.png'
 import panafricanUnionB from './empires/panafrican-union-B.jpg'
 import panafricanUnionC from './empires/panafrican-union-C.jpg'
 import panafricanUnionD from './empires/panafrican-union-D.jpg'
+import panafricanUnionE from './empires/panafrican-union-E.jpg'
+import panafricanUnionF from './empires/panafrican-union-F.jpg'
 import republicOfEuropeA from './empires/republic-of-europe-A.jpg'
 import republicOfEuropeArtwork from './empires/republic-of-europe-artwork.jpg'
 import republicOfEuropeAvatar from './empires/republic-of-europe-avatar.png'
 import republicOfEuropeB from './empires/republic-of-europe-B.jpg'
 import republicOfEuropeC from './empires/republic-of-europe-C.jpg'
 import republicOfEuropeD from './empires/republic-of-europe-D.jpg'
+import republicOfEuropeE from './empires/republic-of-europe-E.jpg'
+import republicOfEuropeF from './empires/republic-of-europe-F.jpg'
 import coverArtwork from './its-cover-artwork.jpg'
 import arrowGreen from './menus/arrow-green.png'
 import arrowOrange from './menus/arrow-orange.png'
@@ -223,11 +249,16 @@ const Images = {
   artificialIntelligence, artificialSun, darkMatter, immortality, planetaryArchives, taxHaven, telekinesis, utopia,
   celestialCathedral, consortium, highSecurityPrison, intercontinentalNetwork, luxuryClinic, miningAsteroid, orbitalStation, theWall, worldBank,
   alphaCentauri, hyperborea, mysteriousVessel, pandemonium, pandoraBox, shambhala, valhalla,
-  aztecEmpireA, aztecEmpireArtwork, aztecEmpireAvatar, aztecEmpireB, aztecEmpireC, aztecEmpireD,
-  federationOfAsiaA, federationOfAsiaArtwork, federationOfAsiaAvatar, federationOfAsiaB, federationOfAsiaC, federationOfAsiaD,
-  noramStatesA, noramStatesArtwork, noramStatesAvatar, noramStatesB, noramStatesC, noramStatesD,
-  panafricanUnionA, panafricanUnionArtwork, panafricanUnionAvatar, panafricanUnionB, panafricanUnionC, panafricanUnionD,
-  republicOfEuropeA, republicOfEuropeArtwork, republicOfEuropeAvatar, republicOfEuropeB, republicOfEuropeC, republicOfEuropeD,
+  aztecEmpireA, aztecEmpireArtwork, aztecEmpireAvatar, aztecEmpireB, aztecEmpireC, aztecEmpireD, aztecEmpireE, aztecEmpireF,
+  federationOfAsiaA, federationOfAsiaArtwork, federationOfAsiaAvatar, federationOfAsiaB, federationOfAsiaC, federationOfAsiaD, federationOfAsiaE,
+  federationOfAsiaF,
+  noramStatesA, noramStatesArtwork, noramStatesAvatar, noramStatesB, noramStatesC, noramStatesD, noramStatesE, noramStatesF,
+  panafricanUnionA, panafricanUnionArtwork, panafricanUnionAvatar, panafricanUnionB, panafricanUnionC, panafricanUnionD, panafricanUnionE, panafricanUnionF,
+  republicOfEuropeA, republicOfEuropeArtwork, republicOfEuropeAvatar, republicOfEuropeB, republicOfEuropeC, republicOfEuropeD, republicOfEuropeE,
+  republicOfEuropeF,
+  nationsOfOceaniaA, nationsOfOceaniaArtwork, nationsOfOceaniaAvatar, nationsOfOceaniaB, nationsOfOceaniaC, nationsOfOceaniaD, nationsOfOceaniaE,
+  nationsOfOceaniaF,
+  northHegemonyA, northHegemonyArtwork, northHegemonyAvatar, northHegemonyB, northHegemonyC, northHegemonyD, northHegemonyE, northHegemonyF,
   arrowGreen, arrowOrange, arrowWhite, buttonArrow,
   buttonBlack, buttonBlue, buttonGreen, buttonGrey, buttonRed, buttonYellow, textureGrey,
   circleMetal, titleBlack, titleBlue, titleGreen, titleGrey, titleOrange, titleWhite, titleYellow,

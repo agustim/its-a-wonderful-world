@@ -5,9 +5,8 @@ import GameState from './GameState'
 import GameView from './GameView'
 import Character, {characters, ChooseCharacter, isCharacter} from './material/Character'
 import Construction from './material/Construction'
-import DevelopmentDetails, {totalCost} from './material/DevelopmentDetails'
+import {totalCost} from './material/DevelopmentDetails'
 import {ascensionDevelopmentCardIds, baseDevelopmentCardIds, getCardDetails, getCardType} from './material/Developments'
-import {isDevelopmentType} from './material/DevelopmentType'
 import EmpireName from './material/EmpireName'
 import Empires from './material/Empires'
 import EmpireSide from './material/EmpireSide'
@@ -407,30 +406,6 @@ export function getNextProductionStep(game: GameState | GameView) {
       return Resource.Exploration
     default:
       return undefined
-  }
-}
-
-export function getProduction(player: Player | PlayerView, resource: Resource): number {
-  const developmentsProduction = player.constructedDevelopments.reduce((sum, card) => sum + getDevelopmentProduction(player, getCardDetails(card), resource), 0)
-  return Math.max(0, getEmpireProduction(player, resource) + developmentsProduction)
-}
-
-function getEmpireProduction(player: Player | PlayerView, resource: Resource): number {
-  return Empires[player.empire][player.empireSide].production[resource] || 0
-}
-
-function getDevelopmentProduction(player: Player | PlayerView, development: DevelopmentDetails, resource: Resource): number {
-  if (!development.production) {
-    return 0
-  } else if (isResource(development.production)) {
-    return development.production === resource ? 1 : 0
-  } else {
-    const production = development.production[resource]
-    if (isDevelopmentType(production)) {
-      return player.constructedDevelopments.filter(card => getCardDetails(card).type === production).length
-    } else {
-      return production || 0
-    }
   }
 }
 

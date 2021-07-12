@@ -114,7 +114,9 @@ export const empireBackground: Record<EmpireName, string> = {
   [EmpireName.FederationOfAsia]: Images.federationOfAsiaArtwork,
   [EmpireName.NoramStates]: Images.noramStatesArtwork,
   [EmpireName.PanafricanUnion]: Images.panafricanUnionArtwork,
-  [EmpireName.RepublicOfEurope]: Images.republicOfEuropeArtwork
+  [EmpireName.RepublicOfEurope]: Images.republicOfEuropeArtwork,
+  [EmpireName.NationsOfOceania]: Images.nationsOfOceaniaArtwork,
+  [EmpireName.NorthHegemony]: Images.northHegemonyArtwork
 }
 
 export const textColor = (theme: Theme) => css`

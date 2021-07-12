@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
-import {getProduction} from '@gamepark/its-a-wonderful-world/ItsAWonderfulWorld'
 import Resource, {resources} from '@gamepark/its-a-wonderful-world/material/Resource'
 import Player from '@gamepark/its-a-wonderful-world/Player'
 import PlayerView from '@gamepark/its-a-wonderful-world/PlayerView'
-import {FC, Fragment, HTMLAttributes} from 'react'
+import {getProduction} from '@gamepark/its-a-wonderful-world/Production'
+import {FC, HTMLAttributes} from 'react'
 import {useTranslation} from 'react-i18next'
 import Images from '../material/Images'
 import {getDescription} from '../material/resources/ResourceCube'
@@ -47,7 +47,7 @@ export default function PlayerResourceProduction({player}: Props) {
   }
 
   return (
-    <Fragment>
+    <>
       {Array.from(productionDisplay.entries()).flatMap(([resource, productionDisplay]) => {
         if (productionDisplay.multiplier) {
           return [
@@ -58,11 +58,11 @@ export default function PlayerResourceProduction({player}: Props) {
           ]
         } else {
           return [...Array(productionDisplay.size).keys()].map((_, index) =>
-            <img key={resource + index} src={resourceIcon[resource]} css={productionStyle(productionDisplay.index! + index)} draggable="false"
+            <img key={resource + '_' + index} src={resourceIcon[resource]} css={productionStyle(productionDisplay.index! + index)} draggable="false"
                  alt={getDescription(t, resource)}/>)
         }
       })}
-    </Fragment>
+    </>
   )
 }
 

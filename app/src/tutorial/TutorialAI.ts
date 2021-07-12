@@ -1,6 +1,6 @@
 import GameState from '@gamepark/its-a-wonderful-world/GameState'
 import ItsAWonderfulWorld, {
-  canBuild, constructionsThatMayReceiveCubes, getMovesToBuild, getNextProductionStep, getProduction, getRemainingCost, numberOfRounds, placeAvailableCubesMoves
+  canBuild, constructionsThatMayReceiveCubes, getMovesToBuild, getNextProductionStep, getRemainingCost, numberOfRounds, placeAvailableCubesMoves
 } from '@gamepark/its-a-wonderful-world/ItsAWonderfulWorld'
 import Character, {ChooseCharacter, isCharacter} from '@gamepark/its-a-wonderful-world/material/Character'
 import Construction from '@gamepark/its-a-wonderful-world/material/Construction'
@@ -22,6 +22,7 @@ import {tellYouAreReadyMove} from '@gamepark/its-a-wonderful-world/moves/TellYou
 import Phase from '@gamepark/its-a-wonderful-world/Phase'
 import Player from '@gamepark/its-a-wonderful-world/Player'
 import PlayerView from '@gamepark/its-a-wonderful-world/PlayerView'
+import {getProduction} from '@gamepark/its-a-wonderful-world/Production'
 import {getPlayerScore} from '@gamepark/its-a-wonderful-world/Scoring'
 import produce from 'immer'
 
@@ -364,6 +365,22 @@ const empiresProductionRate: Record<EmpireName, Record<Resource, number>> = {
     [Resource.Gold]: 1.2,
     [Resource.Exploration]: 1,
     [Resource.Krystallium]: 2
+  },
+  [EmpireName.NationsOfOceania]: {
+    [Resource.Materials]: 1.2,
+    [Resource.Energy]: 0.4,
+    [Resource.Science]: 1,
+    [Resource.Gold]: 1,
+    [Resource.Exploration]: 1,
+    [Resource.Krystallium]: 2
+  },
+  [EmpireName.NorthHegemony]: {
+    [Resource.Materials]: 0.6,
+    [Resource.Energy]: 2,
+    [Resource.Science]: 0.2,
+    [Resource.Gold]: 0.5,
+    [Resource.Exploration]: 0.8,
+    [Resource.Krystallium]: 2
   }
 }
 
@@ -411,6 +428,24 @@ const empiresExpectedScore: Record<EmpireName, Record<Character | DevelopmentTyp
     [DevelopmentType.Project]: 0,
     [DevelopmentType.Research]: 0,
     [DevelopmentType.Vehicle]: 1,
+    [DevelopmentType.Structure]: 0
+  },
+  [EmpireName.NationsOfOceania]: {
+    [Character.Financier]: 3,
+    [Character.General]: 1,
+    [DevelopmentType.Discovery]: 0,
+    [DevelopmentType.Project]: 3,
+    [DevelopmentType.Research]: 0,
+    [DevelopmentType.Vehicle]: 0,
+    [DevelopmentType.Structure]: 1
+  },
+  [EmpireName.NorthHegemony]: {
+    [Character.Financier]: 1,
+    [Character.General]: 3,
+    [DevelopmentType.Discovery]: 3,
+    [DevelopmentType.Project]: 0,
+    [DevelopmentType.Research]: 0,
+    [DevelopmentType.Vehicle]: 3,
     [DevelopmentType.Structure]: 0
   }
 }

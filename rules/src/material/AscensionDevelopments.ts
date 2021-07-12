@@ -159,7 +159,7 @@ export const ArtificialIntelligence: DevelopmentDetails = {
   deck: DeckType.Ascension,
   type: Research,
   constructionCost: {[Science]: 3},
-  production: {[Science]: Vehicle},
+  production: {resource: Science, factor: Vehicle},
   victoryPoints: 1,
   recyclingBonus: Science
 }
@@ -338,7 +338,7 @@ export const Shambhala: DevelopmentDetails = {
   deck: DeckType.Ascension,
   type: Discovery,
   constructionCost: {[Exploration]: 4},
-  production: {[Exploration]: Project},
+  production: {resource: Exploration, factor: Project},
   victoryPoints: 4,
   recyclingBonus: Exploration
 }

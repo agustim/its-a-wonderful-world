@@ -2,7 +2,7 @@ import OptionsSpec from '@gamepark/rules-api/dist/options/OptionsSpec'
 import {TFunction} from 'i18next'
 import GameState from './GameState'
 import EmpireName, {empireNames} from './material/EmpireName'
-import EmpireSide from './material/EmpireSide'
+import EmpireSide, {empireSides} from './material/EmpireSide'
 
 export type ItsAWonderfulWorldOptions = {
   players: { id: EmpireName }[],
@@ -24,7 +24,7 @@ export const ItsAWonderfulWorldOptionsSpec: OptionsSpec<ItsAWonderfulWorldOption
   },
   empiresSide: {
     label: t => t('Empire cards side'),
-    values: Object.values(EmpireSide),
+    values: empireSides,
     valueSpec: side => ({
       label: t => t('Side {side}', {side}),
       help: t => getEmpireSideHelp(side, t),
@@ -51,6 +51,10 @@ export function getPlayerName(empire: EmpireName, t: TFunction): string {
       return t('Panafrican Union')
     case EmpireName.RepublicOfEurope:
       return t('Republic of Europe')
+    case EmpireName.NationsOfOceania:
+      return t('Nations of Oceania')
+    case EmpireName.NorthHegemony:
+      return t('North Hegemony')
   }
 }
 
@@ -64,5 +68,9 @@ function getEmpireSideHelp(side: EmpireSide, t: TFunction) {
       return t('sideC.help')
     case EmpireSide.D:
       return t('sideD.help')
+    case EmpireSide.E:
+      return t('sideE.help')
+    case EmpireSide.F:
+      return t('sideF.help')
   }
 }

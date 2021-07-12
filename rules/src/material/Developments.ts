@@ -108,7 +108,7 @@ export const AircraftCarrier: DevelopmentDetails = {
   type: Vehicle,
   constructionCost: {[Materials]: 3, [Energy]: 4},
   constructionBonus: {[General]: 2},
-  production: {[Exploration]: Vehicle},
+  production: {resource: Exploration, factor: Vehicle},
   recyclingBonus: Materials
 }
 
@@ -256,7 +256,7 @@ export const Neuroscience: DevelopmentDetails = {
   deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 3},
-  production: {[Science]: Research},
+  production: {resource: Science, factor: Research},
   victoryPoints: 1,
   recyclingBonus: Science
 }
@@ -274,7 +274,7 @@ export const RobotAssistants: DevelopmentDetails = {
   deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 3},
-  production: {[Materials]: Structure},
+  production: {resource: Materials, factor: Structure},
   victoryPoints: 1,
   recyclingBonus: Materials
 }
@@ -320,7 +320,7 @@ export const SuperSonar: DevelopmentDetails = {
   deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 4},
-  production: {[Exploration]: Vehicle},
+  production: {resource: Exploration, factor: Vehicle},
   victoryPoints: 1,
   recyclingBonus: Exploration
 }
@@ -381,7 +381,7 @@ export const VirtualReality: DevelopmentDetails = {
   deck: DeckType.Default,
   type: Research,
   constructionCost: {[Science]: 5},
-  production: {[Gold]: Research},
+  production: {resource: Gold, factor: Research},
   victoryPoints: 2,
   recyclingBonus: Gold
 }
@@ -449,7 +449,7 @@ export const MagneticTrain: DevelopmentDetails = {
   type: Project,
   constructionCost: {[Energy]: 1, [Science]: 1, [Gold]: 3},
   constructionBonus: {[Financier]: 2},
-  production: {[Gold]: Structure},
+  production: {resource: Gold, factor: Structure},
   victoryPoints: 2,
   recyclingBonus: Gold
 }
@@ -486,7 +486,7 @@ export const PropagandaCenter: DevelopmentDetails = {
   type: Project,
   constructionCost: {[Gold]: 3},
   constructionBonus: General,
-  production: {[Gold]: Project},
+  production: {resource: Gold, factor: Project},
   victoryPoints: 1,
   recyclingBonus: Gold,
   numberOfCopies: 2
@@ -563,7 +563,7 @@ export const University: DevelopmentDetails = {
   deck: DeckType.Default,
   type: Project,
   constructionCost: {[Science]: 1, [Gold]: 2},
-  production: {[Science]: Project},
+  production: {resource: Science, factor: Project},
   victoryPoints: 2,
   recyclingBonus: Science
 }
@@ -590,7 +590,7 @@ export const AncientAstronauts: DevelopmentDetails = {
   type: Discovery,
   constructionCost: {[Exploration]: 6, [General]: 1},
   constructionBonus: {[Krystallium]: 2},
-  production: {[Science]: Discovery},
+  production: {resource: Science, factor: Discovery},
   victoryPoints: 10,
   recyclingBonus: Science
 }
@@ -687,7 +687,7 @@ export const KingSolomonsMines: DevelopmentDetails = {
   deck: DeckType.Default,
   type: Discovery,
   constructionCost: {[Exploration]: 4},
-  production: {[Gold]: Structure},
+  production: {resource: Gold, factor: Structure},
   victoryPoints: 2,
   recyclingBonus: Gold
 }

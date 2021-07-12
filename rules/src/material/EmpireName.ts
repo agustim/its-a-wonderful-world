@@ -1,7 +1,7 @@
 import {isEnumValue} from '@gamepark/rules-api'
 
 enum EmpireName {
-  AztecEmpire = 1, FederationOfAsia, NoramStates, PanafricanUnion, RepublicOfEurope
+  AztecEmpire = 1, FederationOfAsia, NoramStates, PanafricanUnion, RepublicOfEurope, NationsOfOceania, NorthHegemony
 }
 
 export default EmpireName
