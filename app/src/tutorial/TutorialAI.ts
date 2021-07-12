@@ -1,7 +1,6 @@
 import GameState from '@gamepark/its-a-wonderful-world/GameState'
 import ItsAWonderfulWorld, {
-  canBuild, constructionsThatMayReceiveCubes, getMovesToBuild, getNextProductionStep, getProduction, getRemainingCost, getScore, numberOfRounds,
-  placeAvailableCubesMoves
+  canBuild, constructionsThatMayReceiveCubes, getMovesToBuild, getNextProductionStep, getProduction, getRemainingCost, numberOfRounds, placeAvailableCubesMoves
 } from '@gamepark/its-a-wonderful-world/ItsAWonderfulWorld'
 import Character, {ChooseCharacter, isCharacter} from '@gamepark/its-a-wonderful-world/material/Character'
 import Construction from '@gamepark/its-a-wonderful-world/material/Construction'
@@ -23,6 +22,7 @@ import {tellYouAreReadyMove} from '@gamepark/its-a-wonderful-world/moves/TellYou
 import Phase from '@gamepark/its-a-wonderful-world/Phase'
 import Player from '@gamepark/its-a-wonderful-world/Player'
 import PlayerView from '@gamepark/its-a-wonderful-world/PlayerView'
+import {getPlayerScore} from '@gamepark/its-a-wonderful-world/Scoring'
 import produce from 'immer'
 
 type AIOptions = {
@@ -131,11 +131,11 @@ export default class TutorialAI {
     if (isCharacter(development.constructionBonus)) {
       expectedScore += expectedScores[development.constructionBonus]
     } else if (development.constructionBonus && !isResource(development.constructionBonus)) {
-      if (development.constructionBonus.General) {
-        expectedScore += expectedScores.General
+      if (development.constructionBonus[Character.General]) {
+        expectedScore += expectedScores[Character.General]
       }
-      if (development.constructionBonus.Financier) {
-        expectedScore += expectedScores.Financier
+      if (development.constructionBonus[Character.Financier]) {
+        expectedScore += expectedScores[Character.Financier]
       }
     }
     if (development.victoryPoints) {
@@ -146,7 +146,7 @@ export default class TutorialAI {
         Object.values(DevelopmentType).forEach(developmentType => expectedScore += expectedScores[developmentType] * expectedScores[developmentType])
       }
     }
-    return Math.max(0, expectedScore - (development.constructionCost.Financier || 0) * expectedScores.Financier - (development.constructionCost.General || 0) * expectedScores.General)
+    return Math.max(0, expectedScore - (development.constructionCost[Character.Financier] || 0) * expectedScores[Character.Financier] - (development.constructionCost[Character.General] || 0) * expectedScores[Character.General])
   }
 
   private recycleRate(development: DevelopmentDetails, player: Player | PlayerView, round: number) {
@@ -302,7 +302,7 @@ export default class TutorialAI {
     const player = game.players.find(player => player.empire === this.playerId) as Player
     const roundsLeft = numberOfRounds - game.round
     const potentialScore = roundsLeft > 0 ? this.potentialScore(player, game.round) : 0
-    return getScore(player) + roundsLeft * (roundsLeft + 1) / 2 * this.expectedProductionScore(player) + potentialScore
+    return getPlayerScore(player) + roundsLeft * (roundsLeft + 1) / 2 * this.expectedProductionScore(player) + potentialScore
   }
 
   private potentialScore(player: Player, round: number) {

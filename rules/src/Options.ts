@@ -1,7 +1,7 @@
 import OptionsSpec from '@gamepark/rules-api/dist/options/OptionsSpec'
 import {TFunction} from 'i18next'
 import GameState from './GameState'
-import EmpireName from './material/EmpireName'
+import EmpireName, {empireNames} from './material/EmpireName'
 import EmpireSide from './material/EmpireSide'
 
 export type ItsAWonderfulWorldOptions = {
@@ -18,7 +18,7 @@ export const ItsAWonderfulWorldOptionsSpec: OptionsSpec<ItsAWonderfulWorldOption
   players: {
     id: {
       label: t => t('Empire'),
-      values: Object.values(EmpireName),
+      values: empireNames,
       valueSpec: empire => ({label: t => getPlayerName(empire, t)})
     }
   },

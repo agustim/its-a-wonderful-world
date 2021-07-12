@@ -7,7 +7,7 @@ import Character, {characters, ChooseCharacter, isCharacter} from './material/Ch
 import Construction from './material/Construction'
 import DevelopmentDetails, {totalCost} from './material/DevelopmentDetails'
 import {ascensionDevelopmentCardIds, baseDevelopmentCardIds, getCardDetails, getCardType} from './material/Developments'
-import DevelopmentType, {developmentTypes, isDevelopmentType} from './material/DevelopmentType'
+import {isDevelopmentType} from './material/DevelopmentType'
 import EmpireName from './material/EmpireName'
 import Empires from './material/Empires'
 import EmpireSide from './material/EmpireSide'
@@ -37,6 +37,7 @@ import {isGameOptions, ItsAWonderfulWorldOptions} from './Options'
 import Phase from './Phase'
 import Player from './Player'
 import PlayerView from './PlayerView'
+import {getPlayerScore} from './Scoring'
 import {isPlayerView} from './typeguards'
 
 export const numberOfCardsToDraft = 7
@@ -179,7 +180,7 @@ export default class ItsAWonderfulWorld extends SimultaneousGame<GameState, Move
   }
 
   getScore(empire: EmpireName): number {
-    return getScore(this.getPlayer(empire))
+    return getPlayerScore(this.getPlayer(empire))
   }
 
   getPlayer(playerId: EmpireName): Player {
@@ -193,7 +194,7 @@ export default class ItsAWonderfulWorld extends SimultaneousGame<GameState, Move
     if (playerA.eliminated || playerB.eliminated) {
       return playerA.eliminated ? playerB.eliminated ? playerB.eliminated - playerA.eliminated : 1 : -1
     }
-    const scoreA = getScore(playerA), scoreB = getScore(playerB)
+    const scoreA = getPlayerScore(playerA), scoreB = getPlayerScore(playerB)
     if (scoreA !== scoreB) {
       return scoreB - scoreA
     }
@@ -245,7 +246,7 @@ export default class ItsAWonderfulWorld extends SimultaneousGame<GameState, Move
         break
       case MoveType.RevealChosenCards:
         return {
-          ...move, revealedCards: this.state.players.reduce<{ [key in EmpireName]?: {card: number, index: number} }>((revealedCards, player) => {
+          ...move, revealedCards: this.state.players.reduce<{ [key in EmpireName]?: { card: number, index: number } }>((revealedCards, player) => {
             revealedCards[player.empire] = {card: player.chosenCard!, index: player.hand.indexOf(player.chosenCard!)}
             return revealedCards
           }, {})
@@ -433,40 +434,6 @@ function getDevelopmentProduction(player: Player | PlayerView, development: Deve
   }
 }
 
-function getCardVictoryPointsMultiplier(item: DevelopmentType | Character, victoryPoints?: number | { quantity: number, per: DevelopmentType | Character | (DevelopmentType | Character)[] }): number {
-  return victoryPoints && typeof victoryPoints !== 'number' && victoryPoints[item] ? victoryPoints[item]! : 0
-}
-
-export function getVictoryPointsBonusMultiplier(player: Player | PlayerView, item: DevelopmentType | Character): number {
-  return getCardVictoryPointsMultiplier(item, Empires[player.empire][player.empireSide].victoryPoints) +
-    player.constructedDevelopments.map(card => getCardDetails(card).victoryPoints)
-      .reduce<number>((sum, victoryPoints) => sum + getCardVictoryPointsMultiplier(item, victoryPoints), 0)
-}
-
-export function getVictoryPointsMultiplier(player: Player | PlayerView, item: DevelopmentType | Character): number {
-  return isDevelopmentType(item) ? getVictoryPointsBonusMultiplier(player, item) : getVictoryPointsBonusMultiplier(player, item) + 1
-}
-
-export function getScore(player: Player | PlayerView): number {
-  return getFlatVictoryPoints(player)
-    + developmentTypes.reduce((sum, developmentType) => sum + getComboVictoryPoints(player, developmentType), 0)
-    + characters.reduce((sum, characterType) => sum + getComboVictoryPoints(player, characterType), 0)
-
-}
-
-export function getFlatVictoryPoints(player: Player | PlayerView): number {
-  return player.constructedDevelopments.map(card => getCardDetails(card).victoryPoints)
-    .reduce<number>((sum, victoryPoints) => sum + (typeof victoryPoints == 'number' ? victoryPoints : 0), 0)
-}
-
-export function getComboVictoryPoints(player: Player | PlayerView, item: DevelopmentType | Character): number {
-  return getItemQuantity(player, item) * getVictoryPointsMultiplier(player, item)
-}
-
-export function getItemQuantity(player: Player | PlayerView, item: DevelopmentType | Character): number {
-  return isDevelopmentType(item) ? player.constructedDevelopments.filter(card => getCardDetails(card).type === item).length : player.characters[item]
-}
-
 export function canBuild(player: Player, card: number): boolean {
   const construction = player.constructionArea.find(construction => construction.card === card)
   if (!construction) {
@@ -541,7 +508,7 @@ export function isActive(game: GameView, playerId: EmpireName) {
 }
 
 export function countCharacters(player: Player | PlayerView) {
-  return player.characters.Financier + player.characters.General
+  return player.characters[Character.Financier] + player.characters[Character.General]
 }
 
 export function isOver(game: GameState | GameView): boolean {

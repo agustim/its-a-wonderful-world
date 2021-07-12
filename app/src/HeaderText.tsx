@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import GameView from '@gamepark/its-a-wonderful-world/GameView'
-import {countCharacters, getNextProductionStep, getScore, isOver, numberOfRounds} from '@gamepark/its-a-wonderful-world/ItsAWonderfulWorld'
+import {countCharacters, getNextProductionStep, isOver, numberOfRounds} from '@gamepark/its-a-wonderful-world/ItsAWonderfulWorld'
 import Character from '@gamepark/its-a-wonderful-world/material/Character'
 import Development from '@gamepark/its-a-wonderful-world/material/Development'
 import EmpireName from '@gamepark/its-a-wonderful-world/material/EmpireName'
@@ -13,6 +13,7 @@ import {isReceiveCharacter, receiveCharacterMove} from '@gamepark/its-a-wonderfu
 import {getPlayerName} from '@gamepark/its-a-wonderful-world/Options'
 import Phase from '@gamepark/its-a-wonderful-world/Phase'
 import Player from '@gamepark/its-a-wonderful-world/Player'
+import {getPlayerScore} from '@gamepark/its-a-wonderful-world/Scoring'
 import {isPlayer} from '@gamepark/its-a-wonderful-world/typeguards'
 import {Animation, Player as PlayerInfo, useActions, useAnimation, usePlay, usePlayerId, usePlayers, useTutorial} from '@gamepark/react-client'
 import {TFunction} from 'i18next'
@@ -218,7 +219,7 @@ function getEndOfGameText(t: TFunction, playersInfo: PlayerInfo<EmpireName>[], g
   let highestScore = -1
   let playersWithHighestScore = []
   for (const player of game.players) {
-    const score = getScore(player)
+    const score = getPlayerScore(player)
     if (score >= highestScore) {
       if (score > highestScore) {
         playersWithHighestScore = []

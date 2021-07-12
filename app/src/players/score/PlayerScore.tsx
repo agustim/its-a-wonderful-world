@@ -1,11 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes, Theme, useTheme} from '@emotion/react'
-import {getScore} from '@gamepark/its-a-wonderful-world/ItsAWonderfulWorld'
-import {characters} from '@gamepark/its-a-wonderful-world/material/Character'
-import {developmentTypes} from '@gamepark/its-a-wonderful-world/material/DevelopmentType'
 import Player from '@gamepark/its-a-wonderful-world/Player'
 import PlayerView from '@gamepark/its-a-wonderful-world/PlayerView'
-import {HTMLAttributes} from 'react'
+import {getScoreFromScoringDetails, getScoringDetails} from '@gamepark/its-a-wonderful-world/Scoring'
+import {HTMLAttributes, useMemo} from 'react'
 import {useTranslation} from 'react-i18next'
 import Images from '../../material/Images'
 import {LightTheme} from '../../Theme'
@@ -22,7 +20,12 @@ type Props = {
 
 export default function PlayerScore({player, position, displayScore, setDisplayScore, animation}: Props) {
   const {t} = useTranslation()
-  const score = getScore(player)
+  const scoringDetails = useMemo(() => {
+    const scoringDetails = getScoringDetails(player)
+    scoringDetails.comboVictoryPoints.sort((comboA, comboB) => Array.isArray(comboB.per) ? 1 : Array.isArray(comboA.per) ? -1 : comboA.per - comboB.per)
+    return scoringDetails
+  }, [player])
+  const score = useMemo(() => getScoreFromScoringDetails(scoringDetails), [scoringDetails])
   const theme = useTheme()
   return (
     <div css={[style, topPosition(position), backgroundStyle(theme), animation && growAnimation, displayScore ? displayPlayerScore : hidePlayerScore]}>
@@ -30,9 +33,8 @@ export default function PlayerScore({player, position, displayScore, setDisplayS
               onClick={() => setDisplayScore(!displayScore)}
               title={displayScore ? t('Hide Scores') : t('Display Scores')}/>
       <div css={scorePartStyle}>
-        {developmentTypes.map(developmentType => <ScorePart key={developmentType} player={player} item={developmentType}/>)}
-        {characters.map(character => <ScorePart key={character} player={player} item={character}/>)}
-        <ScorePart player={player}/>
+        {scoringDetails.comboVictoryPoints.map(combo => <ScorePart combo={combo} scoreMultipliers={scoringDetails.scoreMultipliers}/>)}
+        <ScorePart score={scoringDetails.flatVictoryPoints}/>
       </div>
       <div
         css={[scoreStyle, animation && fadeInAnimation, displayScore ? displayScoreStyle : hideScoreStyle, score !== 0 && displayScore && equalSign]}>{score}</div>

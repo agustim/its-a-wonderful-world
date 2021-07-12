@@ -1,3 +1,4 @@
+import {VictoryPoints} from '../Scoring'
 import Character, {isCharacter} from './Character'
 import DeckType from './DeckType'
 import DevelopmentType from './DevelopmentType'
@@ -9,7 +10,7 @@ type DevelopmentDetails = {
   constructionCost: { [key in Resource | Character]?: number }
   constructionBonus?: ConstructionBonus | Partial<Record<ConstructionBonus, number>>
   production?: Resource | { [key in Resource]?: number | DevelopmentType }
-  victoryPoints?: number | { quantity: number, per: DevelopmentType | Character | (DevelopmentType | Character)[] }
+  victoryPoints?: VictoryPoints
   recyclingBonus: Resource
   numberOfCopies?: number
 }

@@ -9,7 +9,7 @@ import ReceiveCharacter, {isReceiveCharacter} from '@gamepark/its-a-wonderful-wo
 import {isRevealChosenCards, RevealChosenCardsView} from '@gamepark/its-a-wonderful-world/moves/RevealChosenCards'
 import Phase from '@gamepark/its-a-wonderful-world/Phase'
 import {useActions, useAnimation, usePlay, usePlayerId, useTutorial} from '@gamepark/react-client'
-import {useCallback, useRef} from 'react'
+import {useCallback, useMemo, useRef} from 'react'
 import DraftDirectionIndicator from '../material/board/DraftDirectionIndicator'
 import {circleCharacterTopPosition, getCircleCharacterLeftPosition} from '../material/board/ResourceArea'
 import CharacterToken from '../material/characters/CharacterToken'
@@ -58,15 +58,12 @@ export default function PlayerPanels({game}: Props) {
     || (isReceiveCharacter(animation.move) && animation.move.playerId !== displayedPlayerId))
   const revealingCards = animation && isRevealChosenCards(animation.move) ? animation.move : undefined
   const supremacyBonus = animation && isReceiveCharacter(animation.move) ? animation.move : undefined
-  const sortByPanel = (entries: [EmpireName, {card: number, index: number}][]) => {
-    entries.sort((a, b) => players.findIndex(p => p.empire === a[0]) - players.findIndex(p => p.empire === b[0]))
-    return entries
-  }
   const actions = useActions()
   const gameOver = isOver(game) && !!actions && actions.every(action => !action.pending)
   const gameWasLive = useRef(!gameOver)
-  const revealedCards = revealingCards && sortByPanel(Object.entries(revealingCards.revealedCards) as [EmpireName, {card: number, index: number}][])
-    .filter((_, index) => !playerId || index !== 0).map(([empireName, revealedCard]) => ({...revealedCard, empireName}))
+  const revealedCards = useMemo(() => revealingCards && players.filter(player => player.empire !== playerId)
+      .map(player => ({empireName: player.empire, card: revealingCards.revealedCards[player.empire]!.card})),
+    [revealingCards, players, playerId])
   return (
     <>
       {game.players.length > 2 && game.phase === Phase.Draft && <DraftDirectionIndicator clockwise={game.round % 2 === 1} players={players.length}/>}

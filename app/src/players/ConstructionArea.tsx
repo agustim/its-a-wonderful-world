@@ -176,8 +176,8 @@ function getSmartPlaceItemMoves(player: Player, construction: Construction): (Pl
     [Resource.Krystallium]: krystalliumAvailable
   }
   const availableCharacters: Record<Character, number> = {
-    [Character.Financier]: player.characters.Financier,
-    [Character.General]: player.characters.General
+    [Character.Financier]: player.characters[Character.Financier],
+    [Character.General]: player.characters[Character.General]
   }
   getRemainingCost(construction).forEach(cost => {
     if (isResource(cost.item)) {

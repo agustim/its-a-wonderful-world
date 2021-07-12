@@ -1,16 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
-import {getItemQuantity, getVictoryPointsBonusMultiplier} from '@gamepark/its-a-wonderful-world/ItsAWonderfulWorld'
-import Character, {characters} from '@gamepark/its-a-wonderful-world/material/Character'
-import DevelopmentType, {developmentTypes} from '@gamepark/its-a-wonderful-world/material/DevelopmentType'
 import EmpireName from '@gamepark/its-a-wonderful-world/material/EmpireName'
 import {getPlayerName} from '@gamepark/its-a-wonderful-world/Options'
 import Player from '@gamepark/its-a-wonderful-world/Player'
 import PlayerView from '@gamepark/its-a-wonderful-world/PlayerView'
+import {ComboVictoryPoints, getComboValue, getScoringDetails} from '@gamepark/its-a-wonderful-world/Scoring'
 import {Avatar, useOptions, usePlayer} from '@gamepark/react-client'
 import {SpeechBubbleDirection} from '@gamepark/react-client/dist/Avatar'
 import {GameSpeed} from '@gamepark/rules-api'
-import {HTMLAttributes, useEffect, useState} from 'react'
+import {HTMLAttributes, useEffect, useMemo, useState} from 'react'
 import {useTranslation} from 'react-i18next'
 import {empireAvatar} from '../material/empires/EmpireCard'
 import gamePointIcon from '../util/game-point.svg'
@@ -29,7 +27,7 @@ export default function PlayerPanel({player, position, ...props}: Props) {
   const {t} = useTranslation()
   const options = useOptions()
   const playerInfo = usePlayer<EmpireName>(player.empire)
-  const bestMultiplier = getBestVictoryPointsMultiplier(player)
+  const bestCombo = useMemo(() => getBestVictoryPointsCombo(player), [player])
   const [gamePoints, setGamePoints] = useState(playerInfo?.gamePointsDelta)
   useEffect(() => {
     if (typeof playerInfo?.gamePointsDelta === 'number' && typeof gamePoints !== 'number') {
@@ -53,7 +51,7 @@ export default function PlayerPanel({player, position, ...props}: Props) {
         }
       </h3>
       <PlayerResourceProduction player={player}/>
-      {bestMultiplier && <VictoryPointsMultiplier item={bestMultiplier.item} multiplier={bestMultiplier.multiplier} css={victoryPointsMultiplierStyle}/>}
+      {bestCombo && <VictoryPointsMultiplier combo={bestCombo} css={victoryPointsMultiplierStyle}/>}
       <PlayerConstructions player={player}/>
     </div>
   )
@@ -136,18 +134,14 @@ const victoryPointsMultiplierStyle = css`
   height: 20%;
 `
 
-type Multiplier = { item: DevelopmentType | Character, multiplier: number, score: number }
-
-const getBestVictoryPointsMultiplier = (player: Player | PlayerView) => {
-  let bestMultiplier: Multiplier | undefined = undefined
-  for (const item of [...developmentTypes, ...characters]) {
-    const multiplier = getVictoryPointsBonusMultiplier(player, item)
-    if (multiplier) {
-      const score = multiplier * getItemQuantity(player, item)
-      if (!bestMultiplier || bestMultiplier.score < score || (bestMultiplier.score === score && bestMultiplier.multiplier < multiplier)) {
-        bestMultiplier = {item, multiplier, score}
-      }
+function getBestVictoryPointsCombo(player: Player | PlayerView): ComboVictoryPoints | undefined {
+  const scoringDetails = getScoringDetails(player, true)
+  let bestCombo: {combo: ComboVictoryPoints, score: number} | undefined = undefined
+  for (const comboVictoryPoint of scoringDetails.comboVictoryPoints) {
+    const score = getComboValue(comboVictoryPoint, scoringDetails.scoreMultipliers)
+    if (!bestCombo || bestCombo.score < score) {
+      bestCombo = {combo: comboVictoryPoint, score}
     }
   }
-  return bestMultiplier
+  return bestCombo?.combo
 }
