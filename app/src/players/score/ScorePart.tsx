@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
-import {ComboVictoryPoints, getComboValue, ScoreMultiplier} from '@gamepark/its-a-wonderful-world/Scoring'
+import {ComboVictoryPoints, getComboMultiplier, getComboValue, ScoreMultiplier} from '@gamepark/its-a-wonderful-world/Scoring'
 import {HTMLAttributes} from 'react'
 import Images from '../../material/Images'
 import VictoryPointsMultiplier from '../VictoryPointsMultiplier'
@@ -14,7 +14,7 @@ type Props = {
 export default function ScorePart({combo, scoreMultipliers, score}: Props) {
   return (
     <div css={style}>
-      {combo && scoreMultipliers && <VictoryPointsMultiplier css={multiplierStyle} combo={combo} quantity={combo.quantity}/>}
+      {combo && scoreMultipliers && <VictoryPointsMultiplier css={multiplierStyle} combo={combo} quantity={getComboMultiplier(combo, scoreMultipliers!)}/>}
       <div css={scoreStyle}>{score ?? getComboValue(combo!, scoreMultipliers!)}</div>
     </div>
   )

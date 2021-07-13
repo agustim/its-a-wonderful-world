@@ -14,7 +14,7 @@ import {TFunction} from 'i18next'
 import {useMemo} from 'react'
 import {DragPreviewImage, useDrag} from 'react-dnd'
 import {useTranslation} from 'react-i18next'
-import {costSpaceDeltaX, costSpaceDeltaY} from '../../players/DevelopmentCardUnderConstruction'
+import {costSpaceDeltaX, costSpaceDeltaX2, costSpaceDeltaY, getConstructionSpaceLocation} from '../../players/DevelopmentCardUnderConstruction'
 import {LightTheme} from '../../Theme'
 import {
   areasX, boardHeight, boardTop, boardWidth, empireCardBottomMargin, empireCardHeight, empireCardLeftMargin, empireCardWidth, getAreaCardX, getAreaCardY, glow
@@ -57,8 +57,9 @@ export default function ResourceArea({game, player, resource, quantity, validate
     let translateY = -(boardResourceTopPosition + cubeDeltaY + cubePosition.y * resourceHeight) * boardHeight / 100 - boardTop
     if (isPlaceResourceOnConstruction(move)) {
       const constructionIndex = player.constructionArea.findIndex(construction => construction.card === move.card)
-      translateX += getAreaCardX(constructionIndex, player.constructionArea.length, game.players.length === 2) + costSpaceDeltaX
-      translateY += getAreaCardY(1) + costSpaceDeltaY(move.space)
+      const {column, index} = getConstructionSpaceLocation(player.constructionArea[constructionIndex], move.space)
+      translateX += getAreaCardX(constructionIndex, player.constructionArea.length, game.players.length === 2) + (column === 1 ? costSpaceDeltaX : costSpaceDeltaX2)
+      translateY += getAreaCardY(1) + costSpaceDeltaY(column, index)
     } else {
       const resourcePosition = player.empireCardResources.filter(resource => resource !== Krystallium).length
       const destination = empireCardResourcePosition[resourcePosition % 5]

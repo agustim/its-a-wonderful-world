@@ -66,9 +66,13 @@ function isSameCombo(combo: ComboVictoryPoints, newCombo: ComboVictoryPoints) {
 }
 
 export function getComboValue(combo: ComboVictoryPoints, scoreMultipliers: { [key in ScoreMultiplier]: number }) {
+  return combo.quantity * getComboMultiplier(combo, scoreMultipliers)
+}
+
+export function getComboMultiplier(combo: ComboVictoryPoints, scoreMultipliers: { [key in ScoreMultiplier]: number }) {
   if (Array.isArray(combo.per)) {
-    return combo.quantity * Math.min(...combo.per.map(scoreMultiplier => scoreMultipliers[scoreMultiplier]))
+    return Math.min(...combo.per.map(scoreMultiplier => scoreMultipliers[scoreMultiplier]))
   } else {
-    return combo.quantity * scoreMultipliers[combo.per]
+    return scoreMultipliers[combo.per]
   }
 }

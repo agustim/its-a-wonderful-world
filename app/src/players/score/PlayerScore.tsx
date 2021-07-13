@@ -33,7 +33,7 @@ export default function PlayerScore({player, position, displayScore, setDisplayS
               onClick={() => setDisplayScore(!displayScore)}
               title={displayScore ? t('Hide Scores') : t('Display Scores')}/>
       <div css={scorePartStyle}>
-        {scoringDetails.comboVictoryPoints.map(combo => <ScorePart combo={combo} scoreMultipliers={scoringDetails.scoreMultipliers}/>)}
+        {scoringDetails.comboVictoryPoints.map((combo, index) => <ScorePart key={index} combo={combo} scoreMultipliers={scoringDetails.scoreMultipliers}/>)}
         <ScorePart score={scoringDetails.flatVictoryPoints}/>
       </div>
       <div
