@@ -129,8 +129,7 @@ const gamePointIconStyle = css`
 const victoryPointsMultiplierStyle = css`
   position: absolute;
   top: 38%;
-  left: 3%;
-  width: 15%;
+  left: 2%;
   height: 20%;
 `
 

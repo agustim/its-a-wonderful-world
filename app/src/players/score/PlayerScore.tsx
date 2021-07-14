@@ -22,7 +22,7 @@ export default function PlayerScore({player, position, displayScore, setDisplayS
   const {t} = useTranslation()
   const scoringDetails = useMemo(() => {
     const scoringDetails = getScoringDetails(player)
-    scoringDetails.comboVictoryPoints.sort((comboA, comboB) => Array.isArray(comboB.per) ? 1 : Array.isArray(comboA.per) ? -1 : comboA.per - comboB.per)
+    scoringDetails.comboVictoryPoints.sort((comboA, comboB) => Array.isArray(comboA.per) ? 1 : Array.isArray(comboB.per) ? -1 : comboA.per - comboB.per)
     return scoringDetails
   }, [player])
   const score = useMemo(() => getScoreFromScoringDetails(scoringDetails), [scoringDetails])
@@ -113,7 +113,7 @@ const fadeInAnimation = css`
 `
 
 const arrowStandardStyle = css`
-  width: 8em;
+  width: 7.5em;
   height: 10em;
 `
 

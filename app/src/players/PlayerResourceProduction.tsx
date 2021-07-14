@@ -86,7 +86,7 @@ const productionStyle = (index: number) => {
     return css`
       position: absolute;
       top: 35%;
-      left: ${22 + index * 12}%;
+      left: ${26 + index * 12}%;
       width: 11%;
       filter: drop-shadow(1px 1px 3px black);
     `
@@ -94,7 +94,7 @@ const productionStyle = (index: number) => {
     return css`
       position: absolute;
       top: 58%;
-      left: ${28 + (index - 6) * 12}%;
+      left: ${32 + (index - 6) * 12}%;
       width: 11%;
       filter: drop-shadow(1px 1px 3px black);
     `
@@ -111,7 +111,7 @@ const productionMultiplierStyle = (index: number) => {
       position: absolute;
       text-align: center;
       top: 37%;
-      left: ${22 + index * 12}%;
+      left: ${26 + index * 12}%;
       width: 11%;
     `
   } else {
@@ -119,7 +119,7 @@ const productionMultiplierStyle = (index: number) => {
       position: absolute;
       text-align: center;
       top: 60%;
-      left: ${28 + (index - 6) * 12}%;
+      left: ${32 + (index - 6) * 12}%;
       width: 11%;
     `
   }

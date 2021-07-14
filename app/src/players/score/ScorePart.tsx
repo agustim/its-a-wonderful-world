@@ -12,9 +12,11 @@ type Props = {
 } & HTMLAttributes<HTMLDivElement>
 
 export default function ScorePart({combo, scoreMultipliers, score}: Props) {
+  const isMultiCombo = combo && Array.isArray(combo.per) && combo.per.length > 1
   return (
     <div css={style}>
-      {combo && scoreMultipliers && <VictoryPointsMultiplier css={multiplierStyle} combo={combo} quantity={getComboMultiplier(combo, scoreMultipliers!)}/>}
+      {combo && scoreMultipliers &&
+      <VictoryPointsMultiplier css={[multiplierStyle, isMultiCombo && comboStyle]} combo={combo} quantity={getComboMultiplier(combo, scoreMultipliers!)}/>}
       <div css={scoreStyle}>{score ?? getComboValue(combo!, scoreMultipliers!)}</div>
     </div>
   )
@@ -59,11 +61,17 @@ const scoreStyle = css`
 
 const multiplierStyle = css`
   height: 40%;
-  width: 0;
-  margin-right: 15%;
+  width: 100%;
+  justify-content: center;
   filter: drop-shadow(0 0 1px black);
 
   & img {
     filter: none;
+  }
+`
+
+const comboStyle = css`
+  & img {
+    height: 70%
   }
 `
